@@ -36,6 +36,14 @@ public class App {
     int ssize = 0;
 
     while(true) {
+      System.out.println("▶명령어 목록◀");
+      System.out.println("회원 등록: /member/add");
+      System.out.println("회원 목록: /member/list");
+      System.out.println("주문 등록: /order/add");
+      System.out.println("주문 목록: /order/list");
+      System.out.println("배송 등록: /shipping/add");
+      System.out.println("배송 목록: /shipping/add");
+
       System.out.print("명령> ");
       String command = scanner.nextLine();
 
