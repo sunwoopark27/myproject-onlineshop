@@ -43,6 +43,7 @@ public class App {
       System.out.println("주문 목록: /order/list");
       System.out.println("배송 등록: /shipping/add");
       System.out.println("배송 목록: /shipping/add");
+      System.out.println();
 
       System.out.print("명령> ");
       String command = scanner.nextLine();
