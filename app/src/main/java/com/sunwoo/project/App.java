@@ -1,5 +1,10 @@
 package com.sunwoo.project;
 
+import com.sunwoo.project.Handler.MemberHandler;
+import com.sunwoo.project.Handler.OrderHandler;
+import com.sunwoo.project.Handler.ShippingHandler;
+import com.sunwoo.util.Prompt;
+
 public class App {
 
   public static void main(String[] args) {
@@ -17,22 +22,22 @@ public class App {
       String command = Prompt.promptString("명령> ");
 
       if(command.equalsIgnoreCase("회원 등록")) {
-        MemberHandler.addMember();
+        MemberHandler.add();
 
       }else if(command.equalsIgnoreCase("회원 목록")) {
-        MemberHandler.listMember();
+        MemberHandler.list();
 
       }else if(command.equalsIgnoreCase("주문 등록")) {
-        OrderHandler.addOrder();
+        OrderHandler.add();
 
       }else if(command.equalsIgnoreCase("주문 목록")) {
-        OrderHandler.listOrder();
+        OrderHandler.list();
 
       }else if (command.equalsIgnoreCase("배송 등록")) {
-        ShippingHandler.addShipping();
+        ShippingHandler.add();
 
       }else if (command.equalsIgnoreCase("배송 목록")) {
-        ShippingHandler.listShipping();
+        ShippingHandler.list();
 
       }else if(command.equalsIgnoreCase("quit") || command.equalsIgnoreCase("exit")) {
         System.out.println("안녕!");

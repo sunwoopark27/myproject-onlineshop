@@ -1,4 +1,4 @@
-package com.sunwoo.project;
+package com.sunwoo.util;
 
 import java.sql.Date;
 import java.util.Scanner;
@@ -6,23 +6,23 @@ import java.util.Scanner;
 public class Prompt {
   static Scanner scanner = new Scanner(System.in);
   //사용자에게 명령 입력 받는 메소드
-  static String promptString (String title) {
+  public static String promptString (String title) {
     System.out.print(title);
     return scanner.nextLine();
   }
 
   //명령으로 string 입력받아 int값으로 변환해주는 메소드
-  static int promptInt (String title) {
+  public static int promptInt (String title) {
     String str = promptString(title);
     return Integer.valueOf(str);
   }
   //명령으로 string 입력받아 Date값으로 변환해주는 메소드
-  static Date promptDate (String title) {
+  public static Date promptDate (String title) {
     String str = promptString(title);
     return Date.valueOf(str);
   }
 
-  static void close() {
+  public static void close() {
     scanner.close();
   }
 }
