@@ -41,18 +41,20 @@ public class OrderHandler {
       System.out.println("잘못된 회원 번호입니다.");
     }
 
+    o.product = "";
     while(true) {
-      String name = Prompt.promptString("상품명(enter(취소)): ");
+      String name = Prompt.promptString("상품명(enter(완료)): ");
       if(name.isEmpty()) {
-        System.out.println("주문 등록을 취소합니다.");
-        System.out.println();
-        return;
-      }
-      if(ProductHandler.exist(name)) {
-        o.product = name;
         break;
       }
-      System.out.println("잘못된 상품명입니다.");
+      if(ProductHandler.exist(name)) {
+        if(o.product.length() != 0) {
+          o.product += ", ";
+        }
+        o.product += name;
+      }else {
+        System.out.println("잘못된 상품명입니다.");
+      }
     }
     o.request = Prompt.promptString("요청사항: ");
     o.orderDate = new Date(System.currentTimeMillis());
