@@ -1,25 +1,17 @@
 package com.sunwoo.project.Handler;
 
+import com.sunwoo.project.domain.Shipping;
 import com.sunwoo.util.Prompt;
 
 public class ShippingHandler {
 
-  static class Shipping {
-    String memberId;
-    int orderNumber;
-    int trackingNumber;
-    int shippingStatus;
-    String shippingManager;
-  }
-
   //배송
   static final int LENGTH = 100;
 
-  static Shipping[] shippings = new Shipping[LENGTH];
+  Shipping[] shippings = new Shipping[LENGTH];
+  int size = 0;
 
-  static int size = 0;
-
-  public static void add() {
+  public void add(MemberHandler memberList) {
     System.out.println("[배송 등록]");
 
     Shipping s = new Shipping();
@@ -29,7 +21,7 @@ public class ShippingHandler {
       if(id.length() == 0) {
         System.out.println("배송 등록을 취소합니다.");
         return;
-      }else if(MemberHandler.exist(id)) {
+      }else if(memberList.exist(id)) {
         s.memberId = id;
         break;
       }
@@ -41,17 +33,17 @@ public class ShippingHandler {
     s.shippingStatus = Prompt.promptInt("배송상태\n" + "0: 배송준비중\n" + "1: 배송중\n" + "2: 배송완료\n" + "> ");
     s.shippingManager = Prompt.promptString("배송 담당자: ");
 
-    shippings[size++] = s;
+    this.shippings[this.size++] = s;
 
     System.out.println();
   }
 
-  public static void list() {
+  public void list() {
     System.out.println("[배송 목록]");
 
-    for (int i = 0; i < size; i++) {
+    for (int i = 0; i < this.size; i++) {
 
-      Shipping s = shippings[i];
+      Shipping s = this.shippings[i];
 
       String statusLabel = null;
 

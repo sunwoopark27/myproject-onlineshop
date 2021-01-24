@@ -1,8 +1,6 @@
 package com.sunwoo.project;
 
 import com.sunwoo.project.Handler.BoardHandler;
-import com.sunwoo.project.Handler.BoardHandler2;
-import com.sunwoo.project.Handler.BoardHandler3;
 import com.sunwoo.project.Handler.MemberHandler;
 import com.sunwoo.project.Handler.OrderHandler;
 import com.sunwoo.project.Handler.ProductHandler;
@@ -12,6 +10,18 @@ import com.sunwoo.util.Prompt;
 public class App {
 
   public static void main(String[] args) {
+
+    BoardHandler boardList = new BoardHandler();
+    BoardHandler boardList2 = new BoardHandler();
+    BoardHandler boardList3 = new BoardHandler();
+
+    MemberHandler memberList = new MemberHandler();
+
+    OrderHandler orderList = new OrderHandler();
+
+    ProductHandler productList = new ProductHandler();
+
+    ShippingHandler shippingList = new ShippingHandler();
 
     while(true) {
       System.out.println("▶명령어◀");
@@ -34,40 +44,47 @@ public class App {
       String command = Prompt.promptString("명령> ");
 
       if(command.equalsIgnoreCase("회원 등록")) {
-        MemberHandler.add();
+        memberList.add();
 
       }else if(command.equalsIgnoreCase("회원 목록")) {
-        MemberHandler.list();
+        memberList.list();
 
       }else if (command.equalsIgnoreCase("상품 등록")) {
-        ProductHandler.add();
+        productList.add();
 
       }else if (command.equalsIgnoreCase("상품 목록")) {
-        ProductHandler.list();
+        productList.list();
 
       }else if(command.equalsIgnoreCase("주문 등록")) {
-        OrderHandler.add();
+        orderList.add(memberList,productList);
 
       }else if(command.equalsIgnoreCase("주문 목록")) {
-        OrderHandler.list();
+        orderList.list();
 
       }else if (command.equalsIgnoreCase("배송 등록")) {
-        ShippingHandler.add();
+        shippingList.add(memberList);
 
       }else if (command.equalsIgnoreCase("배송 목록")) {
-        ShippingHandler.list();
+        shippingList.list();
+
       }else if (command.equalsIgnoreCase("상품 문의")) {
-        BoardHandler.add();
+        boardList.add();
+
       }else if (command.equalsIgnoreCase("상품 문의 목록")) {
-        BoardHandler.list();
+        boardList.list();
+
       }else if (command.equalsIgnoreCase("배송 문의")) {
-        BoardHandler2.add();
+        boardList2.add();
+
       }else if (command.equalsIgnoreCase("배송 문의 목록")) {
-        BoardHandler2.list();
+        boardList2.list();
+
       }else if (command.equalsIgnoreCase("교환/반품 문의")) {
-        BoardHandler3.add();
+        boardList3.add();
+
       }else if (command.equalsIgnoreCase("교환/반품 문의 목록")) {
-        BoardHandler3.list();
+        boardList3.list();
+
       }else if(command.equalsIgnoreCase("quit") || command.equalsIgnoreCase("exit")) {
         System.out.println("안녕!");
         break;

@@ -1,26 +1,19 @@
 package com.sunwoo.project.Handler;
 
 import java.sql.Date;
+import com.sunwoo.project.domain.Order;
 import com.sunwoo.util.Prompt;
 
 public class OrderHandler {
 
-  static class Order{
-    String memberId;
-    int orderNumber;
-    String product;  
-    Date orderDate;   
-    String request;
-  }
-
   //주문
   static final int LENGTH = 100;
 
-  static Order[] orders = new Order[LENGTH];
+  Order[] orders = new Order[LENGTH];
 
-  static int size = 0;
+  int size = 0;
 
-  public static void add() {
+  public void add(MemberHandler memberList, ProductHandler productList) {
 
     System.out.println("[주문 등록]");
 
@@ -34,7 +27,7 @@ public class OrderHandler {
         System.out.println();
         return;
       }
-      if(MemberHandler.exist(id)) {
+      if(memberList.exist(id)) {
         o.memberId = id;
         break;
       }
@@ -47,7 +40,7 @@ public class OrderHandler {
       if(name.isEmpty()) {
         break;
       }
-      if(ProductHandler.exist(name)) {
+      if(productList.exist(name)) {
         if(o.product.length() != 0) {
           o.product += ", ";
         }
@@ -59,16 +52,16 @@ public class OrderHandler {
     o.request = Prompt.promptString("요청사항: ");
     o.orderDate = new Date(System.currentTimeMillis());
 
-    orders[size++] = o;
+    this.orders[this.size++] = o;
 
     System.out.println();
   }
 
-  public static void list() {
+  public void list() {
     System.out.println("[주문 목록]");
 
-    for(int i = 0; i < size; i++) {
-      Order o = orders[i];
+    for(int i = 0; i < this.size; i++) {
+      Order o = this.orders[i];
 
       System.out.printf("주문 번호: %d 회원 아이디: %s 상품명: %s\n주문 날짜: %s 요청사항: %s\n"
           , o.orderNumber, o.memberId, o.product, o.orderDate, o.request);

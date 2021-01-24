@@ -7,11 +7,10 @@ import com.sunwoo.util.Prompt;
 public class BoardHandler {
 
   static final int LENGTH = 100;
-  static Board[] boards = new Board[LENGTH];
-  static int size = 0;
+  Board[] boards = new Board[LENGTH];
+  int size = 0;
 
-  public static void add() {
-    System.out.println("[상품 문의]");
+  public void add() {
     System.out.println("[새 게시글]");
     Board b = new Board();
 
@@ -21,16 +20,16 @@ public class BoardHandler {
     b.writer = Prompt.promptString("작성자: ");
     b.registeredDate = new Date(System.currentTimeMillis());
 
-    boards[size++] = b;
+    this.boards[this.size++] = b;
     System.out.println("게시글을 등록하겠습니다.");
     System.out.println();
   }
 
-  public static void list() {
+  public void list() {
     System.out.println("[게시글 목록]");
 
-    for(int i = 0; i < size; i++) {
-      Board b = boards[i];
+    for(int i = 0; i < this.size; i++) {
+      Board b = this.boards[i];
       System.out.printf("번호: %d 제목: %s\n내용: %s\n작성자: %s 작성 날짜: %s\n조회수: %d 좋아요: %d\n",
           b.number, b.title, b.content, b.writer, b.registeredDate, b.viewCount, b.like);
       System.out.println("-------------------------------------------------------------");
