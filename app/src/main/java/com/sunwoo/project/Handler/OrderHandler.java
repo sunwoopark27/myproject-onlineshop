@@ -13,7 +13,15 @@ public class OrderHandler {
 
   int size = 0;
 
-  public void add(MemberHandler memberList, ProductHandler productList) {
+  MemberHandler memberList;
+  ProductHandler productList;
+
+  public OrderHandler(MemberHandler memberHandler, ProductHandler productHandler){
+    this.memberList = memberHandler;
+    this.productList = productHandler;
+  }
+
+  public void add() {
 
     System.out.println("[주문 등록]");
 
@@ -27,7 +35,7 @@ public class OrderHandler {
         System.out.println();
         return;
       }
-      if(memberList.exist(id)) {
+      if(this.memberList.exist(id)) {
         o.memberId = id;
         break;
       }
@@ -40,7 +48,7 @@ public class OrderHandler {
       if(name.isEmpty()) {
         break;
       }
-      if(productList.exist(name)) {
+      if(this.productList.exist(name)) {
         if(o.product.length() != 0) {
           o.product += ", ";
         }

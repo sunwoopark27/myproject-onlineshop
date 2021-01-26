@@ -17,11 +17,12 @@ public class App {
 
     MemberHandler memberList = new MemberHandler();
 
-    OrderHandler orderList = new OrderHandler();
-
     ProductHandler productList = new ProductHandler();
 
-    ShippingHandler shippingList = new ShippingHandler();
+    OrderHandler orderList = new OrderHandler(memberList, productList);
+
+    ShippingHandler shippingList = new ShippingHandler(memberList);
+
 
     while(true) {
       System.out.println("▶명령어◀");
@@ -56,13 +57,13 @@ public class App {
         productList.list();
 
       }else if(command.equalsIgnoreCase("주문 등록")) {
-        orderList.add(memberList,productList);
+        orderList.add();
 
       }else if(command.equalsIgnoreCase("주문 목록")) {
         orderList.list();
 
       }else if (command.equalsIgnoreCase("배송 등록")) {
-        shippingList.add(memberList);
+        shippingList.add();
 
       }else if (command.equalsIgnoreCase("배송 목록")) {
         shippingList.list();

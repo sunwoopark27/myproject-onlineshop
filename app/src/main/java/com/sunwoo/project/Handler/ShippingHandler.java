@@ -11,7 +11,13 @@ public class ShippingHandler {
   Shipping[] shippings = new Shipping[LENGTH];
   int size = 0;
 
-  public void add(MemberHandler memberList) {
+  MemberHandler memberList;
+
+  public ShippingHandler(MemberHandler memberHandler) {
+    this.memberList = memberHandler;
+  }
+
+  public void add() {
     System.out.println("[배송 등록]");
 
     Shipping s = new Shipping();
@@ -21,7 +27,7 @@ public class ShippingHandler {
       if(id.length() == 0) {
         System.out.println("배송 등록을 취소합니다.");
         return;
-      }else if(memberList.exist(id)) {
+      }else if(this.memberList.exist(id)) {
         s.memberId = id;
         break;
       }
