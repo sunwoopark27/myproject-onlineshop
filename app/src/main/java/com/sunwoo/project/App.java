@@ -28,11 +28,9 @@ public class App {
       System.out.println("▶명령어◀");
       System.out.println("<회원> 등록/목록");
       System.out.println("<상품> 등록/목록");
-      System.out.println("       문의/문의 목록");
       System.out.println("<주문> 등록/목록");
       System.out.println("<배송> 등록/목록");
-      System.out.println("       문의/문의 목록");
-      System.out.println("<교환/반품> 문의/문의 목록");
+      System.out.println("<문의> Q&A");
       System.out.println();
 
       String command = Prompt.promptString("명령> ");
@@ -61,24 +59,40 @@ public class App {
       }else if (command.equalsIgnoreCase("배송 목록")) {
         shippingList.list();
 
-      }else if (command.equalsIgnoreCase("상품 문의")) {
-        boardList.add();
+      }else if(command.equals("Q&A")) {
+        while(true) {
+          System.out.println("[Q&A]");
+          System.out.println("▶명령어◀");
+          System.out.println("<상품> 문의/문의 목록");
+          System.out.println("<배송> 문의/문의 목록");
+          System.out.println("<교환/반품> 문의/문의 목록");
+          System.out.println("<뒤로가기> back");
+          System.out.println();
+          command = Prompt.promptString("명령> ");
 
-      }else if (command.equalsIgnoreCase("상품 문의 목록")) {
-        boardList.list();
+          if (command.equalsIgnoreCase("상품 문의")) {
+            boardList.add();
 
-      }else if (command.equalsIgnoreCase("배송 문의")) {
-        boardList2.add();
+          }else if (command.equalsIgnoreCase("상품 문의 목록")) {
+            boardList.list();
 
-      }else if (command.equalsIgnoreCase("배송 문의 목록")) {
-        boardList2.list();
+          }else if (command.equalsIgnoreCase("배송 문의")) {
+            boardList2.add();
 
-      }else if (command.equalsIgnoreCase("교환/반품 문의")) {
-        boardList3.add();
+          }else if (command.equalsIgnoreCase("배송 문의 목록")) {
+            boardList2.list();
 
-      }else if (command.equalsIgnoreCase("교환/반품 문의 목록")) {
-        boardList3.list();
+          }else if (command.equalsIgnoreCase("교환/반품 문의")) {
+            boardList3.add();
 
+          }else if (command.equalsIgnoreCase("교환/반품 문의 목록")) {
+            boardList3.list();
+
+          }else if (command.equalsIgnoreCase("back")) {
+
+            break;
+          }
+        }
       }else if(command.equalsIgnoreCase("quit") || command.equalsIgnoreCase("exit")) {
         System.out.println("안녕!");
         break;
