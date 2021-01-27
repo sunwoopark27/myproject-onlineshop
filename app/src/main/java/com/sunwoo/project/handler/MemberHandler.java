@@ -1,4 +1,4 @@
-package com.sunwoo.project.Handler;
+package com.sunwoo.project.handler;
 
 import java.sql.Date;
 import com.sunwoo.project.domain.Member;

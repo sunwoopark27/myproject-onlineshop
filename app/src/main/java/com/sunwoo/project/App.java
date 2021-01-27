@@ -1,10 +1,10 @@
 package com.sunwoo.project;
 
-import com.sunwoo.project.Handler.BoardHandler;
-import com.sunwoo.project.Handler.MemberHandler;
-import com.sunwoo.project.Handler.OrderHandler;
-import com.sunwoo.project.Handler.ProductHandler;
-import com.sunwoo.project.Handler.ShippingHandler;
+import com.sunwoo.project.handler.BoardHandler;
+import com.sunwoo.project.handler.MemberHandler;
+import com.sunwoo.project.handler.OrderHandler;
+import com.sunwoo.project.handler.ProductHandler;
+import com.sunwoo.project.handler.ShippingHandler;
 import com.sunwoo.util.Prompt;
 
 public class App {
@@ -26,20 +26,13 @@ public class App {
 
     while(true) {
       System.out.println("▶명령어◀");
-      System.out.println("1. 회원 등록");
-      System.out.println("2. 회원 목록");
-      System.out.println("3. 상품 등록");
-      System.out.println("4. 상품 목록");
-      System.out.println("5. 주문 등록");
-      System.out.println("6. 주문 목록");
-      System.out.println("7. 배송 등록");
-      System.out.println("8. 배송 목록");
-      System.out.println("9. 상품 문의");
-      System.out.println("10. 상품 문의 목록");
-      System.out.println("11. 배송 문의");
-      System.out.println("12. 배송 문의 목록");
-      System.out.println("13. 교환/반품 문의");
-      System.out.println("14. 교환/반품 문의 목록");
+      System.out.println("<회원> 등록/목록");
+      System.out.println("<상품> 등록/목록");
+      System.out.println("       문의/문의 목록");
+      System.out.println("<주문> 등록/목록");
+      System.out.println("<배송> 등록/목록");
+      System.out.println("       문의/문의 목록");
+      System.out.println("<교환/반품> 문의/문의 목록");
       System.out.println();
 
       String command = Prompt.promptString("명령> ");

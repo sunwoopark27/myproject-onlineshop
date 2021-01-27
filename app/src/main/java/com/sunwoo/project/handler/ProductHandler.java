@@ -1,4 +1,4 @@
-package com.sunwoo.project.Handler;
+package com.sunwoo.project.handler;
 
 import com.sunwoo.project.domain.Product;
 import com.sunwoo.util.Prompt;
