@@ -27,7 +27,7 @@ public class OrderHandler {
 
     Order o = new Order();
 
-    o.orderNumber = Prompt.promptInt("주문 번호: ");
+    o.number = Prompt.promptInt("주문 번호: ");
     while(true) {
       String id = Prompt.promptString("회원 아이디(enter(취소)): ");
       if(id.equals("")) {
@@ -42,23 +42,23 @@ public class OrderHandler {
       System.out.println("잘못된 회원 번호입니다.");
     }
 
-    o.product = "";
+    o.products = "";
     while(true) {
       String name = Prompt.promptString("상품명(enter(완료)): ");
       if(name.isEmpty()) {
         break;
       }
       if(this.productList.exist(name)) {
-        if(o.product.length() != 0) {
-          o.product += ", ";
+        if(o.products.length() != 0) {
+          o.products += ", ";
         }
-        o.product += name;
+        o.products += name;
       }else {
         System.out.println("잘못된 상품명입니다.");
       }
     }
     o.request = Prompt.promptString("요청사항: ");
-    o.orderDate = new Date(System.currentTimeMillis());
+    o.registeredDate = new Date(System.currentTimeMillis());
 
     this.orders[this.size++] = o;
 
@@ -70,15 +70,137 @@ public class OrderHandler {
 
     for(int i = 0; i < this.size; i++) {
       Order o = this.orders[i]; 
-      //가격 출력할 수 있게
-      int totalPrice = 0;
 
-      System.out.printf("주문 번호: %d 회원 아이디: %s\n주문한 상품: %s 총 가격: %d\n주문 날짜: %s 요청사항: %s\n"
-          , o.orderNumber, o.memberId, o.product, totalPrice, o.orderDate, o.request);
+      System.out.printf("주문 번호: %d 회원 아이디: %s\n주문한 상품: %s\n총 가격: %d원\n주문 날짜: %s 요청사항: %s\n"
+          , o.number, o.memberId, o.products, o.totalPrice, o.registeredDate, o.request);
       System.out.println("----------------------------------------------------------");
     }
 
     System.out.println();
   }
 
+  boolean exist(int number){
+    for(int i = 0; i < this.size; i++) {
+      if(number == this.orders[i].number) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public void detail() {
+    System.out.println("[주문 상세보기]");
+
+    Order order = findByNo(Prompt.promptInt("번호? "));
+
+    if (order == null) {
+      System.out.println("해당 번호의 주문이 없습니다.");
+      System.out.println();
+    }else {
+      System.out.printf("회원 아이디: %s\n", order.memberId);
+      System.out.printf("주문한 상품: %s\n", order.products);
+      System.out.printf("주문 날짜: %s\n", order.registeredDate);
+      System.out.printf("요청사항: %s\n", order.request);
+      System.out.printf("총 가격: %d원\n", order.totalPrice);
+      System.out.println("-------------------------------------------------------------");
+      return;
+
+    }
+  }
+
+  public void update() {
+    System.out.println("[주문 수정하기]");
+
+    Order order = findByNo(Prompt.promptInt("번호? "));
+    if(order == null) {
+
+      System.out.println("해당 번호의 주문이 없습니다.");
+      System.out.println();
+
+    }else {
+
+      String products = "";
+      while(true) {
+        String name = Prompt.promptString(String.format("주문할 상품(%s)?(완료: 빈문자열)",order.products));
+        if(name.isEmpty()) {
+          break;
+        }
+        if(this.productList.exist(name)) {
+          if(products.length() != 0) {
+            products += ", ";
+          }
+          products += name;
+          break;
+        }else {
+          System.out.println("잘못된 상품명입니다.");
+        }
+      }
+
+      String request = Prompt.promptString(String.format("요청사항(%s)? ",order.request));
+
+      String userChoice = Prompt.promptString("정말 수정하시겠습니까?(y/N) ");
+      if(userChoice.equalsIgnoreCase("y")) {
+        order.products = products;
+        order.request = request;
+        order.registeredDate = new Date(System.currentTimeMillis());
+        System.out.println("주문 수정이 완료되었습니다.");
+        System.out.println();
+      }else {
+        System.out.println("주문 수정을 취소합니다.");
+        System.out.println();
+        return;
+      }
+    }
+  }
+
+
+  public void delete() {
+    System.out.println("[주문 삭제]");
+
+    int index = indexOf(Prompt.promptInt("번호? "));
+    if(index == -1) {
+      System.out.println("해당 번호의 주문이 없습니다.");
+      System.out.println();
+
+    }else {
+      String userChoice = Prompt.promptString("정말 삭제하시겠습니까?(y/N) ");
+
+      if(userChoice.equalsIgnoreCase("y")) {
+
+        for(int x = index + 1; x < this.size; x++) {
+
+          orders[x - 1] = orders[x];
+        }
+        this.orders[--this.size] = null;
+        System.out.println("주문 삭제가 완료되었습니다.");
+        System.out.println();
+        return;
+      }else {
+
+        System.out.println("주문 삭제를 취소하였습니다.");
+        System.out.println();
+        return;
+      }
+    }
+  }
+
+
+  int indexOf(int orderNo) {
+    for(int i = 0; i < this.size; i++) {
+      Order order = this.orders[i];
+      if(orderNo == order.number) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  Order findByNo(int orderNo) {
+    int i = indexOf(orderNo);
+    if(i == -1) {
+      return null;
+    }else {
+      return this.orders[i];
+    }
+  }
 }

@@ -3,11 +3,11 @@ package com.sunwoo.project.domain;
 import java.sql.Date;
 
 public class Member {
-  public int memberNumber;
-  public String memberName;
-  public String memberId;
+  public int number;
+  public String name;
+  public String id;
   public String password;
-  public String memberPhone;
+  public String tel;
   public String address;
   public String email;
   public Date joinDate;

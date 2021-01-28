@@ -30,10 +30,111 @@ public class BoardHandler {
 
     for(int i = 0; i < this.size; i++) {
       Board b = this.boards[i];
-      System.out.printf("번호: %d 제목: %s\n내용: %s\n작성자: %s 작성 날짜: %s\n조회수: %d 좋아요: %d\n",
-          b.number, b.title, b.content, b.writer, b.registeredDate, b.viewCount, b.like);
+      System.out.printf("번호: %d 제목: %s 작성자: %s 등록일: %s\n조회수: %d 좋아요: %d\n",
+          b.number, b.title, b.writer, b.registeredDate, b.viewCount, b.like);
       System.out.println("-------------------------------------------------------------");
     }
   }
 
+  public void detail() {
+    System.out.println("[게시글 상세보기]");
+
+    Board board = findByNo(Prompt.promptInt("번호? "));
+
+    if (board == null) {
+      System.out.println("해당 번호의 게시글이 없습니다.");
+      System.out.println();
+    }else {
+      board.viewCount++;
+      System.out.printf("제목: %s ", board.title);
+      System.out.printf("작성자: %s\n", board.writer);
+      System.out.printf("내용: %s\n", board.content);
+      System.out.printf("등록일: %s ", board.registeredDate);
+      System.out.printf("조회수: %d\n", board.viewCount);
+      System.out.println("-------------------------------------------------------------");
+      return;
+
+    }
+  }
+
+  public void update() {
+    System.out.println("[게시글 수정하기]");
+
+    Board board = findByNo(Prompt.promptInt("번호? "));
+    if(board == null) {
+
+      System.out.println("해당 번호의 게시글이 없습니다.");
+      System.out.println();
+
+    }else {
+
+      String title = Prompt.promptString(String.format("제목(%s)? ",board.title));
+      String content = Prompt.promptString(String.format("내용(%s)? ",board.content));
+
+      String userChoice = Prompt.promptString("정말 수정하시겠습니까?(y/N) ");
+      if(userChoice.equalsIgnoreCase("y")) {
+        board.title = title;
+        board.content = content;
+        Date reRegisteredDate = new Date(System.currentTimeMillis());
+        board.registeredDate = reRegisteredDate;
+        System.out.println("게시물 수정이 완료되었습니다.");
+        System.out.println();
+      }else {
+        System.out.println("게시물 수정을 취소합니다.");
+        System.out.println();
+        return;
+      }
+    }
+  }
+
+
+  public void delete() {
+    System.out.println("[게시글 삭제]");
+
+    int index = indexOf(Prompt.promptInt("번호? "));
+    if(index == -1) {
+      System.out.println("해당 번호의 게시글이 없습니다.");
+      System.out.println();
+
+    }else {
+      String userChoice = Prompt.promptString("정말 삭제하시겠습니까?(y/N) ");
+
+      if(userChoice.equalsIgnoreCase("y")) {
+
+        for(int x = index + 1; x < this.size; x++) {
+
+          boards[x - 1] = boards[x];
+        }
+        this.boards[--this.size] = null;
+        System.out.println("게시글 삭제가 완료되었습니다.");
+        System.out.println();
+        return;
+      }else {
+
+        System.out.println("게시글 삭제를 취소하였습니다.");
+        System.out.println();
+        return;
+      }
+    }
+  }
+
+
+  int indexOf(int boardNo) {
+    for(int i = 0; i < this.size; i++) {
+      Board board = this.boards[i];
+      if(boardNo == board.number) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  Board findByNo(int boardNo) {
+    int i = indexOf(boardNo);
+    if(i == -1) {
+      return null;
+    }else {
+      return this.boards[i];
+    }
+  }
 }
