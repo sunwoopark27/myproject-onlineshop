@@ -70,9 +70,11 @@ public class OrderHandler {
 
     for(int i = 0; i < this.size; i++) {
       Order o = this.orders[i]; 
+      //가격 출력할 수 있게
+      int totalPrice = 0;
 
-      System.out.printf("주문 번호: %d 회원 아이디: %s\n상품명: %s\n주문 날짜: %s 요청사항: %s\n"
-          , o.orderNumber, o.memberId, o.product, o.orderDate, o.request);
+      System.out.printf("주문 번호: %d 회원 아이디: %s\n주문한 상품: %s 총 가격: %d\n주문 날짜: %s 요청사항: %s\n"
+          , o.orderNumber, o.memberId, o.product, totalPrice, o.orderDate, o.request);
       System.out.println("----------------------------------------------------------");
     }
 
