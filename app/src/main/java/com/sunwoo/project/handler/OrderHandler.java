@@ -69,9 +69,9 @@ public class OrderHandler {
     System.out.println("[주문 목록]");
 
     for(int i = 0; i < this.size; i++) {
-      Order o = this.orders[i];
+      Order o = this.orders[i]; 
 
-      System.out.printf("주문 번호: %d 회원 아이디: %s 상품명: %s\n주문 날짜: %s 요청사항: %s\n"
+      System.out.printf("주문 번호: %d 회원 아이디: %s\n상품명: %s\n주문 날짜: %s 요청사항: %s\n"
           , o.orderNumber, o.memberId, o.product, o.orderDate, o.request);
       System.out.println("----------------------------------------------------------");
     }
