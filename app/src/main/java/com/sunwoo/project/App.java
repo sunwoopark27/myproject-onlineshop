@@ -94,7 +94,7 @@ public class App {
           }
         }
       }else if(command.equalsIgnoreCase("quit") || command.equalsIgnoreCase("exit")) {
-        System.out.println("안녕!");
+        System.out.println("이용해주셔서 감사합니다!");
         break;
       }else {
         System.out.println("실행할 수 없는 명령어 입니다.");
