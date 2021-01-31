@@ -26,31 +26,20 @@ public class ShippingHandler {
 
     s.number = Prompt.promptInt("배송 번호: ");
 
-    while(true) {
-      String id = Prompt.promptString("회원 아이디(enter(취소)): ");
-      if(id.length() == 0) {
-        System.out.println("배송 등록을 취소합니다.");
-        return;
-      }else if(this.memberList.exist(id)) {
-        s.memberId = id;
-        break;
-      }
-      System.out.println("잘못된 아이디 입니다.");
+    s.memberId = inputMember("회원 아이디(enter(취소)): ");
+    if(s.memberId == null) {
+      System.out.println("배송 등록을 취소합니다.");
+      System.out.println();
+      return;
     }
 
-    int number = -1;
-    while(true) {
-      number = Prompt.promptInt("주문 번호(-1(취소)): ");
-      if(number == -1) {
-        System.out.println("배송 등록을 취소합니다.");
-        System.out.println();
-        return;
-      }else if(this.orderList.exist(number)) {
-        s.orderNumber = number;
-        break;
-      }
-      System.out.println("잘못된 주문 번호 입니다.");
+    s.orderNumber = inputOrderNumber("주문 번호(-1(취소)): ");
+    if(s.orderNumber == -1) {
+      System.out.println("배송 등록을 취소합니다.");
+      System.out.println();
+      return;
     }
+
     s.trackingNumber = Prompt.promptInt("운송장 번호: ");
     s.status = Prompt.promptInt("배송상태\n" + "0: 배송준비중\n" + "1: 배송중\n" + "2: 배송완료\n" + "> ");
     s.manager = Prompt.promptString("배송 담당자: ");
@@ -67,19 +56,7 @@ public class ShippingHandler {
 
       Shipping s = this.shippings[i];
 
-      String statusLabel = null;
-
-      switch (s.status) {
-        case 0:
-          statusLabel = "배송 준비중";
-          break;
-        case 1: 
-          statusLabel = "배송중";
-          break;
-        case 2:
-          statusLabel = "배송 완료";
-          break;
-      }
+      String statusLabel = getStatusLabel(s.status);
 
       System.out.printf("배송 번호: %d 고객 아이디: %s 주문 번호: %d\n운송장 번호: %d 배송상태: %s\n담당자: %s\n"
           ,s.number, s.memberId, s.orderNumber, s.trackingNumber, statusLabel, s.manager);
@@ -100,19 +77,7 @@ public class ShippingHandler {
       System.out.printf("주문 번호: %s\n", shipping.orderNumber);
       System.out.printf("운송장 번호: %s\n", shipping.trackingNumber);
 
-      String statusLabel = null;
-
-      switch (shipping.status) {
-        case 0:
-          statusLabel = "배송 준비중";
-          break;
-        case 1: 
-          statusLabel = "배송중";
-          break;
-        case 2:
-          statusLabel = "배송 완료";
-          break;
-      }
+      String statusLabel = getStatusLabel(shipping.status);
 
       System.out.printf("배송 상태: %s ", statusLabel);
       System.out.printf("담당자: %s\n", shipping.manager);
@@ -133,36 +98,23 @@ public class ShippingHandler {
 
     }else {
 
-      String memberId = "";
-      while(true) {
-        memberId = Prompt.promptString(String.format("고객아이디(%s)(enter(취소))? ",shipping.memberId));
-        if(memberId.length() == 0) {
-          System.out.println("배송 등록을 취소합니다.");
-          System.out.println();
-          return;
-        }else if(this.memberList.exist(memberId)) {
-          break;
-        }
-        System.out.println("잘못된 아이디 입니다.");
+      String memberId = inputMember(String.format("고객아이디(%s)(enter(취소))? ",shipping.memberId));
+      if(memberId == null) {
+        System.out.println("배송 등록을 취소합니다.");
+        System.out.println();
       }
 
-      int orderNumber = -1;
-      while(true) {
-        orderNumber = Prompt.promptInt(String.format("주문 번호(%s)(-1(취소))? ",shipping.orderNumber));
-        if(orderNumber == -1) {
-          System.out.println("배송 등록을 취소합니다.");
-          System.out.println();
-          return;
-        }else if(this.orderList.exist(orderNumber)) {
-          shipping.orderNumber = orderNumber;
-          break;
-        }
-        System.out.println("잘못된 주문 번호 입니다.");
+      int orderNumber = inputOrderNumber(String.format("주문 번호(%s)(-1(취소))? ",shipping.orderNumber));
+      if(orderNumber == -1) {
+        System.out.println("배송 등록을 취소합니다.");
+        System.out.println();
+        return;
       }
 
       int trackingNumber = Prompt.promptInt(String.format("운송장번호(%s)? ",shipping.trackingNumber));
 
-      int status =  Prompt.promptInt(String.format("0: 배송준비중\n"+ "1: 배송중\n" + "2: 배송완료\n" + "배송상태(%s)? ",shipping.trackingNumber));
+      int status =  Prompt.promptInt(String.format
+          ("0: 배송준비중\n"+ "1: 배송중\n" + "2: 배송완료\n" + "배송상태(%s)? ",getStatusLabel(shipping.status)));
 
       String manager = Prompt.promptString(String.format("담당자(%s)? ",shipping.manager));
 
@@ -232,6 +184,42 @@ public class ShippingHandler {
       return null;
     }else {
       return this.shippings[i];
+    }
+  }
+
+  String getStatusLabel(int status) {
+    switch (status) {
+      case 1:
+        return "배송중";
+      case 2: 
+        return "배송 완료";
+      default:
+        return "배송 준비중";
+    }
+  }
+
+  String inputMember(String promptTitle) {
+    while(true) {
+      String id = Prompt.promptString(promptTitle);
+      if(id.length() == 0) {
+        return null;
+      }else if(this.memberList.exist(id)) {
+        return id;
+      }
+      System.out.println("잘못된 아이디 입니다.");
+    }
+  }
+
+  int inputOrderNumber(String promptTitle) {
+    int number = -1;
+    while(true) {
+      number = Prompt.promptInt(promptTitle);
+      if(number == -1) {
+        return -1;
+      }else if(this.orderList.exist(number)) {
+        return number;
+      }
+      System.out.println("잘못된 주문 번호 입니다.");
     }
   }
 }

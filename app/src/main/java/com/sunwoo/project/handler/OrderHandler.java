@@ -6,11 +6,8 @@ import com.sunwoo.util.Prompt;
 
 public class OrderHandler {
 
-  //주문
-  static final int LENGTH = 100;
-
-  Order[] orders = new Order[LENGTH];
-
+  Node first;
+  Node last;
   int size = 0;
 
   MemberHandler memberList;
@@ -28,39 +25,31 @@ public class OrderHandler {
     Order o = new Order();
 
     o.number = Prompt.promptInt("주문 번호: ");
-    while(true) {
-      String id = Prompt.promptString("회원 아이디(enter(취소)): ");
-      if(id.equals("")) {
-        System.out.println("주문 등록을 취소합니다.");
-        System.out.println();
-        return;
-      }
-      if(this.memberList.exist(id)) {
-        o.memberId = id;
-        break;
-      }
-      System.out.println("잘못된 회원 번호입니다.");
+
+    o.memberId = inputMemberId(); 
+    if(o.memberId == null) {
+      System.out.println("주문 등록을 취소합니다.");
+      System.out.println();
+      return;
     }
 
-    o.products = "";
-    while(true) {
-      String name = Prompt.promptString("상품명(enter(완료)): ");
-      if(name.isEmpty()) {
-        break;
-      }
-      if(this.productList.exist(name)) {
-        if(o.products.length() != 0) {
-          o.products += ", ";
-        }
-        o.products += name;
-      }else {
-        System.out.println("잘못된 상품명입니다.");
-      }
-    }
+    o.products = inputProducts("상품명(enter(완료)): ");
+
     o.request = Prompt.promptString("요청사항: ");
     o.registeredDate = new Date(System.currentTimeMillis());
 
-    this.orders[this.size++] = o;
+    Node node = new Node(o);
+
+    if(last == null) {
+      first = node;
+      last = node;
+    }else {
+      node.prev = last;
+      last.next = node;
+      last = node;
+    }
+
+    this.size++;
 
     System.out.println();
   }
@@ -68,25 +57,31 @@ public class OrderHandler {
   public void list() {
     System.out.println("[주문 목록]");
 
-    for(int i = 0; i < this.size; i++) {
-      Order o = this.orders[i]; 
+    Node cursor = first;
+    while(cursor != null) {
+      Order o = cursor.order;
 
       System.out.printf("주문 번호: %d 회원 아이디: %s\n주문한 상품: %s\n총 가격: %d원\n주문 날짜: %s 요청사항: %s\n"
           , o.number, o.memberId, o.products, o.totalPrice, o.registeredDate, o.request);
       System.out.println("----------------------------------------------------------");
+
+      cursor = cursor.next;
     }
 
     System.out.println();
   }
 
   boolean exist(int number){
-    for(int i = 0; i < this.size; i++) {
-      if(number == this.orders[i].number) {
+    Node cursor = first;
+    while(cursor != null) {
+      if(number == cursor.order.number) {
         return true;
       }
+      cursor = cursor.next;
     }
     return false;
   }
+
 
   public void detail() {
     System.out.println("[주문 상세보기]");
@@ -101,7 +96,7 @@ public class OrderHandler {
       System.out.printf("주문한 상품: %s\n", order.products);
       System.out.printf("주문 날짜: %s\n", order.registeredDate);
       System.out.printf("요청사항: %s\n", order.request);
-      System.out.printf("총 가격: %d원\n", order.totalPrice);
+      System.out.printf("{총 가격: %d원\n", order.totalPrice);
       System.out.println("-------------------------------------------------------------");
       return;
 
@@ -119,22 +114,7 @@ public class OrderHandler {
 
     }else {
 
-      String products = "";
-      while(true) {
-        String name = Prompt.promptString(String.format("주문할 상품(%s)?(완료: 빈문자열)",order.products));
-        if(name.isEmpty()) {
-          break;
-        }
-        if(this.productList.exist(name)) {
-          if(products.length() != 0) {
-            products += ", ";
-          }
-          products += name;
-          break;
-        }else {
-          System.out.println("잘못된 상품명입니다.");
-        }
-      }
+      String products = inputProducts(String.format("주문할 상품(%s)?(완료: 빈문자열)",order.products));
 
       String request = Prompt.promptString(String.format("요청사항(%s)? ",order.request));
 
@@ -157,8 +137,8 @@ public class OrderHandler {
   public void delete() {
     System.out.println("[주문 삭제]");
 
-    int index = indexOf(Prompt.promptInt("번호? "));
-    if(index == -1) {
+    Order order = findByNo(Prompt.promptInt("번호? "));
+    if(order == null) {
       System.out.println("해당 번호의 주문이 없습니다.");
       System.out.println();
 
@@ -166,15 +146,28 @@ public class OrderHandler {
       String userChoice = Prompt.promptString("정말 삭제하시겠습니까?(y/N) ");
 
       if(userChoice.equalsIgnoreCase("y")) {
-
-        for(int x = index + 1; x < this.size; x++) {
-
-          orders[x - 1] = orders[x];
+        Node cursor = first;
+        while(cursor != null) {
+          if(cursor.order == order) {
+            if(first == last) {
+              first = null;
+              last = null;
+            }else if(cursor == first) {
+              cursor.next.prev = null;
+              first = cursor.next;
+            }else if(cursor == last) {
+              last = cursor.prev;
+            }else {
+              cursor.prev.next = cursor.next;
+              if(cursor.next != null) {
+                cursor.next.prev = cursor.prev;
+              }
+            }
+            this.size--;
+            break;
+          }
+          cursor = cursor.next;
         }
-        this.orders[--this.size] = null;
-        System.out.println("주문 삭제가 완료되었습니다.");
-        System.out.println();
-        return;
       }else {
 
         System.out.println("주문 삭제를 취소하였습니다.");
@@ -184,23 +177,56 @@ public class OrderHandler {
     }
   }
 
-
-  int indexOf(int orderNo) {
-    for(int i = 0; i < this.size; i++) {
-      Order order = this.orders[i];
-      if(orderNo == order.number) {
-        return i;
+  Order findByNo(int orderNo) {
+    Node cursor = first;
+    while(cursor != null) {
+      if(orderNo == cursor.order.number) {
+        return cursor.order;        
       }
+      cursor = cursor.next;
     }
-    return -1;
+    return null;
   }
 
-  Order findByNo(int orderNo) {
-    int i = indexOf(orderNo);
-    if(i == -1) {
-      return null;
-    }else {
-      return this.orders[i];
+
+  String inputMemberId(){
+    while(true) {
+      String id = Prompt.promptString("회원 아이디(enter(취소)): ");
+      if(id.equals("")) {
+        return null;
+      }
+      if(this.memberList.exist(id)) {
+        return id;
+      }
+      System.out.println("등록된 회원이 아닙니다.");
+    }
+  }
+
+  String inputProducts(String promptTitle) {
+    String products = "";
+    while(true) {
+      String name = Prompt.promptString(promptTitle);
+      if(name.isEmpty()) {
+        return products;
+      }
+      if(this.productList.exist(name)) {
+        if(products.length() != 0) {
+          products += ", ";
+        }
+        products += name;
+      }else {
+        System.out.println("등록된 상품이 아닙니다.");
+      }
+    }
+  }
+
+  static class Node{
+    Order order;
+    Node next;
+    Node prev;
+
+    Node(Order o){
+      this.order = o;
     }
   }
 }
