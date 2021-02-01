@@ -5,18 +5,14 @@ import com.sunwoo.util.Prompt;
 
 public class ShippingHandler {
 
-  //배송
-  static final int LENGTH = 100;
+  MemberList memberList;
+  OrderList orderList;
 
-  Shipping[] shippings = new Shipping[LENGTH];
-  int size = 0;
+  public ShippingList shippingList = new ShippingList();
 
-  MemberHandler memberList;
-  OrderHandler orderList;
-
-  public ShippingHandler(MemberHandler memberHandler, OrderHandler orderHandler) {
-    this.memberList = memberHandler;
-    this.orderList = orderHandler;
+  public ShippingHandler(MemberList memberList, OrderList orderList) {
+    this.memberList = memberList;
+    this.orderList = orderList;
   }
 
   public void add() {
@@ -24,7 +20,7 @@ public class ShippingHandler {
 
     Shipping s = new Shipping();
 
-    s.number = Prompt.promptInt("배송 번호: ");
+    s.number = Prompt.inputInt("배송 번호: ");
 
     s.memberId = inputMember("회원 아이디(enter(취소)): ");
     if(s.memberId == null) {
@@ -40,11 +36,11 @@ public class ShippingHandler {
       return;
     }
 
-    s.trackingNumber = Prompt.promptInt("운송장 번호: ");
-    s.status = Prompt.promptInt("배송상태\n" + "0: 배송준비중\n" + "1: 배송중\n" + "2: 배송완료\n" + "> ");
-    s.manager = Prompt.promptString("배송 담당자: ");
+    s.trackingNumber = Prompt.inputInt("운송장 번호: ");
+    s.status = Prompt.inputInt("배송상태\n" + "0: 배송준비중\n" + "1: 배송중\n" + "2: 배송완료\n" + "> ");
+    s.manager = Prompt.inputString("배송 담당자: ");
 
-    this.shippings[this.size++] = s;
+    shippingList.add(s);
 
     System.out.println();
   }
@@ -52,22 +48,23 @@ public class ShippingHandler {
   public void list() {
     System.out.println("[배송 목록]");
 
-    for (int i = 0; i < this.size; i++) {
-
-      Shipping s = this.shippings[i];
+    Shipping[] shippings = shippingList.toArray();
+    for(Shipping s : shippings) {
 
       String statusLabel = getStatusLabel(s.status);
 
       System.out.printf("배송 번호: %d 고객 아이디: %s 주문 번호: %d\n운송장 번호: %d 배송상태: %s\n담당자: %s\n"
           ,s.number, s.memberId, s.orderNumber, s.trackingNumber, statusLabel, s.manager);
       System.out.println("-----------------------------------------");
+
     }
     System.out.println();
   }
+
   public void detail() {
     System.out.println("[배송 상세보기]");
 
-    Shipping shipping = findByNo(Prompt.promptInt("번호? "));
+    Shipping shipping = shippingList.get(Prompt.inputInt("번호? "));
 
     if (shipping == null) {
       System.out.println("해당 번호의 배송이 없습니다.");
@@ -90,7 +87,7 @@ public class ShippingHandler {
   public void update() {
     System.out.println("[배송 정보 수정]");
 
-    Shipping shipping = findByNo(Prompt.promptInt("번호? "));
+    Shipping shipping = shippingList.get(Prompt.inputInt("번호? "));
     if(shipping == null) {
 
       System.out.println("해당 번호의 배송이 없습니다.");
@@ -111,15 +108,15 @@ public class ShippingHandler {
         return;
       }
 
-      int trackingNumber = Prompt.promptInt(String.format("운송장번호(%s)? ",shipping.trackingNumber));
+      int trackingNumber = Prompt.inputInt(String.format("운송장번호(%s)? ",shipping.trackingNumber));
 
-      int status =  Prompt.promptInt(String.format
+      int status =  Prompt.inputInt(String.format
           ("0: 배송준비중\n"+ "1: 배송중\n" + "2: 배송완료\n" + "배송상태(%s)? ",getStatusLabel(shipping.status)));
 
-      String manager = Prompt.promptString(String.format("담당자(%s)? ",shipping.manager));
+      String manager = Prompt.inputString(String.format("담당자(%s)? ",shipping.manager));
 
 
-      String userChoice = Prompt.promptString("정말 수정하시겠습니까?(y/N) ");
+      String userChoice = Prompt.inputString("정말 수정하시겠습니까?(y/N) ");
       if(userChoice.equalsIgnoreCase("y")) {
         shipping.memberId = memberId;
         shipping.orderNumber = orderNumber;
@@ -140,21 +137,18 @@ public class ShippingHandler {
   public void delete() {
     System.out.println("[배송 삭제]");
 
-    int index = indexOf(Prompt.promptInt("번호? "));
-    if(index == -1) {
+    int no = Prompt.inputInt("번호? ");
+    Shipping shipping = shippingList.get(no);
+    if(shipping == null) {
       System.out.println("해당 번호의 배송이 없습니다.");
       System.out.println();
 
     }else {
-      String userChoice = Prompt.promptString("정말 삭제하시겠습니까?(y/N) ");
+      String userChoice = Prompt.inputString("정말 삭제하시겠습니까?(y/N) ");
 
       if(userChoice.equalsIgnoreCase("y")) {
 
-        for(int x = index + 1; x < this.size; x++) {
-
-          shippings[x - 1] = shippings[x];
-        }
-        this.shippings[--this.size] = null;
+        shippingList.delete(no);
         System.out.println("배송 삭제가 완료되었습니다.");
         System.out.println();
         return;
@@ -164,26 +158,6 @@ public class ShippingHandler {
         System.out.println();
         return;
       }
-    }
-  }
-
-
-  int indexOf(int shippingNo) {
-    for(int i = 0; i < this.size; i++) {
-      Shipping shipping = this.shippings[i];
-      if(shippingNo == shipping.number) {
-        return i;
-      }
-    }
-    return -1;
-  }
-
-  Shipping findByNo(int shippingNo) {
-    int i = indexOf(shippingNo);
-    if(i == -1) {
-      return null;
-    }else {
-      return this.shippings[i];
     }
   }
 
@@ -200,7 +174,7 @@ public class ShippingHandler {
 
   String inputMember(String promptTitle) {
     while(true) {
-      String id = Prompt.promptString(promptTitle);
+      String id = Prompt.inputString(promptTitle);
       if(id.length() == 0) {
         return null;
       }else if(this.memberList.exist(id)) {
@@ -213,7 +187,7 @@ public class ShippingHandler {
   int inputOrderNumber(String promptTitle) {
     int number = -1;
     while(true) {
-      number = Prompt.promptInt(promptTitle);
+      number = Prompt.inputInt(promptTitle);
       if(number == -1) {
         return -1;
       }else if(this.orderList.exist(number)) {
@@ -222,4 +196,6 @@ public class ShippingHandler {
       System.out.println("잘못된 주문 번호 입니다.");
     }
   }
+
+
 }

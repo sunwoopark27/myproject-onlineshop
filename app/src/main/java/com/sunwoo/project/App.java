@@ -15,13 +15,13 @@ public class App {
     BoardHandler boardShipping = new BoardHandler();
     BoardHandler boardExchangeReturn = new BoardHandler();
 
-    MemberHandler memberList = new MemberHandler();
+    MemberHandler memberHandler = new MemberHandler();
 
-    ProductHandler productList = new ProductHandler();
+    ProductHandler productHandler = new ProductHandler();
 
-    OrderHandler orderList = new OrderHandler(memberList, productList);
+    OrderHandler orderHandler = new OrderHandler(memberHandler.memberList, productHandler.productList);
 
-    ShippingHandler shippingList = new ShippingHandler(memberList,orderList);
+    ShippingHandler shippingHandler = new ShippingHandler(memberHandler.memberList, orderHandler.orderList);
 
     while(true) {
       System.out.println("▶명령어◀");
@@ -32,67 +32,67 @@ public class App {
       System.out.println("<문의> Q&A");
       System.out.println();
 
-      String command = Prompt.promptString("명령> ");
+      String command = Prompt.inputString("명령> ");
 
       if(command.equalsIgnoreCase("회원 등록")) {
-        memberList.add();
+        memberHandler.add();
 
       }else if(command.equalsIgnoreCase("회원 목록")) {
-        memberList.list();
+        memberHandler.list();
 
       }else if(command.equalsIgnoreCase("회원 상세")) {
-        memberList.detail();
+        memberHandler.detail();
 
       }else if(command.equalsIgnoreCase("회원 수정")) {
-        memberList.update();
+        memberHandler.update();
 
       }else if(command.equalsIgnoreCase("회원 삭제")) {
-        memberList.delete();
+        memberHandler.delete();
 
       }else if (command.equalsIgnoreCase("상품 등록")) {
-        productList.add();
+        productHandler.add();
 
       }else if (command.equalsIgnoreCase("상품 목록")) {
-        productList.list();
+        productHandler.list();
 
       }else if (command.equalsIgnoreCase("상품 상세")) {
-        productList.detail();
+        productHandler.detail();
 
       }else if (command.equalsIgnoreCase("상품 수정")) {
-        productList.update();
+        productHandler.update();
 
       }else if (command.equalsIgnoreCase("상품 삭제")) {
-        productList.delete();
+        productHandler.delete();
 
       }else if(command.equalsIgnoreCase("주문 등록")) {
-        orderList.add();
+        orderHandler.add();
 
       }else if(command.equalsIgnoreCase("주문 목록")) {
-        orderList.list();
+        orderHandler.list();
 
       }else if(command.equalsIgnoreCase("주문 상세")) {
-        orderList.detail();
+        orderHandler.detail();
 
       }else if(command.equalsIgnoreCase("주문 수정")) {
-        orderList.update();
+        orderHandler.update();
 
       }else if(command.equalsIgnoreCase("주문 삭제")) {
-        orderList.delete();
+        orderHandler.delete();
 
       }else if (command.equalsIgnoreCase("배송 등록")) {
-        shippingList.add();
+        shippingHandler.add();
 
       }else if (command.equalsIgnoreCase("배송 목록")) {
-        shippingList.list();
+        shippingHandler.list();
 
       }else if(command.equalsIgnoreCase("배송 상세")) {
-        shippingList.detail();
+        shippingHandler.detail();
 
       }else if(command.equalsIgnoreCase("배송 수정")) {
-        shippingList.update();
+        shippingHandler.update();
 
       }else if(command.equalsIgnoreCase("배송 삭제")) {
-        shippingList.delete();
+        shippingHandler.delete();
 
 
       }else if(command.equals("Q&A")) {
@@ -104,7 +104,7 @@ public class App {
           System.out.println("<교환/반품> 문의/문의 목록");
           System.out.println("<뒤로가기> back");
           System.out.println();
-          command = Prompt.promptString("명령> ");
+          command = Prompt.inputString("명령> ");
 
           if (command.equalsIgnoreCase("상품 문의")) {
             boardProduct.add();

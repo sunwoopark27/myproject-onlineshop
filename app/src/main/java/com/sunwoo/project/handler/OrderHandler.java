@@ -6,16 +6,14 @@ import com.sunwoo.util.Prompt;
 
 public class OrderHandler {
 
-  Node first;
-  Node last;
-  int size = 0;
+  MemberList memberList;
+  ProductList productList;
 
-  MemberHandler memberList;
-  ProductHandler productList;
+  public OrderList orderList = new OrderList();
 
-  public OrderHandler(MemberHandler memberHandler, ProductHandler productHandler){
-    this.memberList = memberHandler;
-    this.productList = productHandler;
+  public OrderHandler(MemberList memberList, ProductList productList){
+    this.memberList = memberList;
+    this.productList = productList;
   }
 
   public void add() {
@@ -24,7 +22,7 @@ public class OrderHandler {
 
     Order o = new Order();
 
-    o.number = Prompt.promptInt("주문 번호: ");
+    o.number = Prompt.inputInt("주문 번호: ");
 
     o.memberId = inputMemberId(); 
     if(o.memberId == null) {
@@ -35,21 +33,10 @@ public class OrderHandler {
 
     o.products = inputProducts("상품명(enter(완료)): ");
 
-    o.request = Prompt.promptString("요청사항: ");
+    o.request = Prompt.inputString("요청사항: ");
     o.registeredDate = new Date(System.currentTimeMillis());
 
-    Node node = new Node(o);
-
-    if(last == null) {
-      first = node;
-      last = node;
-    }else {
-      node.prev = last;
-      last.next = node;
-      last = node;
-    }
-
-    this.size++;
+    orderList.add(o);
 
     System.out.println();
   }
@@ -57,36 +44,23 @@ public class OrderHandler {
   public void list() {
     System.out.println("[주문 목록]");
 
-    Node cursor = first;
-    while(cursor != null) {
-      Order o = cursor.order;
+    Order[] orders = orderList.toArray();
+    for(Order o : orders) {
 
       System.out.printf("주문 번호: %d 회원 아이디: %s\n주문한 상품: %s\n총 가격: %d원\n주문 날짜: %s 요청사항: %s\n"
           , o.number, o.memberId, o.products, o.totalPrice, o.registeredDate, o.request);
       System.out.println("----------------------------------------------------------");
 
-      cursor = cursor.next;
     }
 
     System.out.println();
-  }
-
-  boolean exist(int number){
-    Node cursor = first;
-    while(cursor != null) {
-      if(number == cursor.order.number) {
-        return true;
-      }
-      cursor = cursor.next;
-    }
-    return false;
   }
 
 
   public void detail() {
     System.out.println("[주문 상세보기]");
 
-    Order order = findByNo(Prompt.promptInt("번호? "));
+    Order order = orderList.get(Prompt.inputInt("번호? "));
 
     if (order == null) {
       System.out.println("해당 번호의 주문이 없습니다.");
@@ -96,7 +70,7 @@ public class OrderHandler {
       System.out.printf("주문한 상품: %s\n", order.products);
       System.out.printf("주문 날짜: %s\n", order.registeredDate);
       System.out.printf("요청사항: %s\n", order.request);
-      System.out.printf("{총 가격: %d원\n", order.totalPrice);
+      System.out.printf("총 가격: %d원\n", order.totalPrice);
       System.out.println("-------------------------------------------------------------");
       return;
 
@@ -106,7 +80,7 @@ public class OrderHandler {
   public void update() {
     System.out.println("[주문 수정하기]");
 
-    Order order = findByNo(Prompt.promptInt("번호? "));
+    Order order = orderList.get(Prompt.inputInt("번호? "));
     if(order == null) {
 
       System.out.println("해당 번호의 주문이 없습니다.");
@@ -116,9 +90,9 @@ public class OrderHandler {
 
       String products = inputProducts(String.format("주문할 상품(%s)?(완료: 빈문자열)",order.products));
 
-      String request = Prompt.promptString(String.format("요청사항(%s)? ",order.request));
+      String request = Prompt.inputString(String.format("요청사항(%s)? ",order.request));
 
-      String userChoice = Prompt.promptString("정말 수정하시겠습니까?(y/N) ");
+      String userChoice = Prompt.inputString("정말 수정하시겠습니까?(y/N) ");
       if(userChoice.equalsIgnoreCase("y")) {
         order.products = products;
         order.request = request;
@@ -137,39 +111,21 @@ public class OrderHandler {
   public void delete() {
     System.out.println("[주문 삭제]");
 
-    Order order = findByNo(Prompt.promptInt("번호? "));
+    int no = Prompt.inputInt("번호? ");
+    Order order = orderList.get(no);
     if(order == null) {
       System.out.println("해당 번호의 주문이 없습니다.");
       System.out.println();
 
     }else {
-      String userChoice = Prompt.promptString("정말 삭제하시겠습니까?(y/N) ");
+      String userChoice = Prompt.inputString("정말 삭제하시겠습니까?(y/N) ");
 
       if(userChoice.equalsIgnoreCase("y")) {
-        Node cursor = first;
-        while(cursor != null) {
-          if(cursor.order == order) {
-            if(first == last) {
-              first = null;
-              last = null;
-            }else if(cursor == first) {
-              cursor.next.prev = null;
-              first = cursor.next;
-            }else if(cursor == last) {
-              last = cursor.prev;
-            }else {
-              cursor.prev.next = cursor.next;
-              if(cursor.next != null) {
-                cursor.next.prev = cursor.prev;
-              }
-            }
-            this.size--;
-            break;
-          }
-          cursor = cursor.next;
-        }
+        orderList.delete(no);
+        System.out.println("주문 삭제를 완료하였습니다.");
+        System.out.println();
       }else {
-
+        orderList.delete(no);
         System.out.println("주문 삭제를 취소하였습니다.");
         System.out.println();
         return;
@@ -177,21 +133,10 @@ public class OrderHandler {
     }
   }
 
-  Order findByNo(int orderNo) {
-    Node cursor = first;
-    while(cursor != null) {
-      if(orderNo == cursor.order.number) {
-        return cursor.order;        
-      }
-      cursor = cursor.next;
-    }
-    return null;
-  }
-
 
   String inputMemberId(){
     while(true) {
-      String id = Prompt.promptString("회원 아이디(enter(취소)): ");
+      String id = Prompt.inputString("회원 아이디(enter(취소)): ");
       if(id.equals("")) {
         return null;
       }
@@ -205,7 +150,7 @@ public class OrderHandler {
   String inputProducts(String promptTitle) {
     String products = "";
     while(true) {
-      String name = Prompt.promptString(promptTitle);
+      String name = Prompt.inputString(promptTitle);
       if(name.isEmpty()) {
         return products;
       }
@@ -220,13 +165,4 @@ public class OrderHandler {
     }
   }
 
-  static class Node{
-    Order order;
-    Node next;
-    Node prev;
-
-    Node(Order o){
-      this.order = o;
-    }
-  }
 }
