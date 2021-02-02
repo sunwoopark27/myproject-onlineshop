@@ -3,11 +3,11 @@ package com.sunwoo.project.handler;
 import com.sunwoo.project.domain.Board;
 
 public class BoardList {
-  Node first;
-  Node last;
-  int size = 0;
+  private Node first;
+  private Node last;
+  private int size = 0;
 
-  void add(Board b) {
+  public void add(Board b) {
     Node node = new Node(b);
 
     if(first == null) {
@@ -22,7 +22,7 @@ public class BoardList {
 
   }
 
-  Board[] toArray() {
+  public Board[] toArray() {
 
     Node cursor = first;
     Board[] arr = new Board[size];
@@ -35,11 +35,11 @@ public class BoardList {
     return arr;
   }
 
-  Board get(int boardNo) {
+  public Board get(int boardNo) {
 
     Node cursor = first;
     while(cursor != null) {
-      if(cursor.board.number == boardNo) {
+      if(cursor.board.getNumber() == boardNo) {
         return cursor.board;
       }
       cursor = cursor.next;
@@ -47,7 +47,7 @@ public class BoardList {
     return null;
   }
 
-  void delete (int boardNo) {
+  public void delete (int boardNo) {
 
     Board board = get(boardNo);
 

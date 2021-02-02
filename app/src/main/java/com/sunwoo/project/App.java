@@ -19,9 +19,9 @@ public class App {
 
     ProductHandler productHandler = new ProductHandler();
 
-    OrderHandler orderHandler = new OrderHandler(memberHandler.memberList, productHandler.productList);
+    OrderHandler orderHandler = new OrderHandler(memberHandler, productHandler);
 
-    ShippingHandler shippingHandler = new ShippingHandler(memberHandler.memberList, orderHandler.orderList);
+    ShippingHandler shippingHandler = new ShippingHandler(memberHandler, orderHandler);
 
     while(true) {
       System.out.println("▶명령어◀");

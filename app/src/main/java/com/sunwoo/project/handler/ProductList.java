@@ -3,21 +3,12 @@ package com.sunwoo.project.handler;
 import com.sunwoo.project.domain.Product;
 
 public class ProductList {
-  Node first;
-  Node last;
-  int size = 0;
+  private Node first;
+  private Node last;
+  private int size = 0;
 
-  static class Node{
-    Product product;
-    Node next;
-    Node prev;
 
-    Node(Product p){
-      this.product = p;
-    }
-  }
-
-  void add(Product p) {
+  public void add(Product p) {
     Node node = new Node(p);
 
     if(last == null) {
@@ -32,7 +23,7 @@ public class ProductList {
     this.size++;
   }
 
-  Product[] toArray() {
+  public Product[] toArray() {
     Product[] arr = new Product[size];
     Node cursor = first;
     int i = 0;
@@ -43,11 +34,11 @@ public class ProductList {
     return arr;
   }
 
-  Product get(int productNo) {
+  public Product get(int productNo) {
 
     Node cursor = first;
     while(cursor != null) {
-      if(cursor.product.number == productNo) {
+      if(cursor.product.getNumber() == productNo) {
         return cursor.product;
       }
       cursor = cursor.next;
@@ -55,7 +46,7 @@ public class ProductList {
     return null;
   }
 
-  void delete(int productNo) {
+  public void delete(int productNo) {
     Product product = get(productNo);
 
     if(product == null) {
@@ -87,14 +78,24 @@ public class ProductList {
     }
   }
 
-  boolean exist(String name) {
+  public boolean exist(String name) {
     Node cursor = first;
     while(cursor != null) {
-      if(name.equals(cursor.product.name)) {
+      if(name.equals(cursor.product.getName())) {
         return true;
       }
       cursor = cursor.next;
     }
     return false;
+  }
+
+  static class Node{
+    Product product;
+    Node next;
+    Node prev;
+
+    Node(Product p){
+      this.product = p;
+    }
   }
 }

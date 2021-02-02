@@ -3,12 +3,12 @@ package com.sunwoo.project.handler;
 import com.sunwoo.project.domain.Order;
 
 public class OrderList {
-  Node first;
-  Node last;
-  int size = 0;
+  private Node first;
+  private Node last;
+  private int size = 0;
 
 
-  void add(Order o) {
+  public void add(Order o) {
     Node node = new Node(o);
 
     if(last == null) {
@@ -23,7 +23,7 @@ public class OrderList {
     this.size++;
   }
 
-  Order[] toArray() {
+  public Order[] toArray() {
 
     Order[] arr = new Order[size];
     Node cursor = first;
@@ -36,11 +36,11 @@ public class OrderList {
     return arr;
   }
 
-  Order get(int orderNo) {
+  public Order get(int orderNo) {
 
     Node cursor = first;
     while(cursor != null) {
-      if(orderNo == cursor.order.number) {
+      if(orderNo == cursor.order.getNumber()) {
         return cursor.order;        
       }
       cursor = cursor.next;
@@ -48,7 +48,7 @@ public class OrderList {
     return null;
   }
 
-  void delete(int orderNo) {
+  public void delete(int orderNo) {
 
     Order order = get(orderNo);
     if(order == null) {
@@ -79,6 +79,18 @@ public class OrderList {
       cursor = cursor.next;
     }
   }
+
+  public boolean exist(int number){
+    Node cursor = first;
+    while(cursor != null) {
+      if(number == cursor.order.getNumber()) {
+        return true;
+      }
+      cursor = cursor.next;
+    }
+    return false;
+  }
+
   static class Node{
     Order order;
     Node next;
@@ -89,15 +101,5 @@ public class OrderList {
     }
   }
 
-  boolean exist(int number){
-    Node cursor = first;
-    while(cursor != null) {
-      if(number == cursor.order.number) {
-        return true;
-      }
-      cursor = cursor.next;
-    }
-    return false;
-  }
 
 }

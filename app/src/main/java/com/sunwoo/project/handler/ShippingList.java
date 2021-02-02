@@ -4,11 +4,11 @@ import com.sunwoo.project.domain.Shipping;
 
 public class ShippingList {
 
-  Node first;
-  Node last;
-  int size = 0;
+  private Node first;
+  private Node last;
+  private int size = 0;
 
-  void add(Shipping s) {
+  public void add(Shipping s) {
     Node node = new Node(s);
 
     if(last == null) {
@@ -23,7 +23,7 @@ public class ShippingList {
 
   }
 
-  Shipping[] toArray() {
+  public Shipping[] toArray() {
     Shipping[] arr = new Shipping[size];
     Node cursor = first;
     int i = 0;
@@ -35,10 +35,10 @@ public class ShippingList {
     return arr;
   }
 
-  Shipping get(int shippingNo) {
+  public Shipping get(int shippingNo) {
     Node cursor = first;
     while(cursor != null) {
-      if(cursor.shipping.number == shippingNo) {
+      if(cursor.shipping.getNumber() == shippingNo) {
         return cursor.shipping;
       }
       cursor = cursor.next;
@@ -46,7 +46,7 @@ public class ShippingList {
     return null;
   }
 
-  void delete(int shippingNo) {
+  public void delete(int shippingNo) {
 
     Shipping shipping = get(shippingNo);
 

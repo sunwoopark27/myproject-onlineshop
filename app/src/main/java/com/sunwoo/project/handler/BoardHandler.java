@@ -6,18 +6,22 @@ import com.sunwoo.util.Prompt;
 
 public class BoardHandler {
 
-  BoardList boardList = new BoardList();
+  private BoardList boardList = new BoardList();
+
+  public BoardList getBoardList(BoardList boardList) {// 일단 관행을 따르는것?
+    return this.boardList;
+  }
 
   public void add() {
     System.out.println("[새 게시글]");
 
     Board b = new Board();
 
-    b.number = Prompt.inputInt("번호: ");
-    b.title = Prompt.inputString("제목: ");
-    b.content = Prompt.inputString("내용: ");
-    b.writer = Prompt.inputString("작성자: ");
-    b.registeredDate = new Date(System.currentTimeMillis());
+    b.setNumber(Prompt.inputInt("번호: "));
+    b.setTitle(Prompt.inputString("제목: "));
+    b.setContent(Prompt.inputString("내용: "));
+    b.setWriter(Prompt.inputString("작성자: "));
+    b.setRegisteredDate(new Date(System.currentTimeMillis()));
 
     boardList.add(b);
 
@@ -33,7 +37,7 @@ public class BoardHandler {
     for(Board b : boards) {
 
       System.out.printf("번호: %d 제목: %s 작성자: %s 등록일: %s\n조회수: %d 좋아요: %d\n",
-          b.number, b.title, b.writer, b.registeredDate, b.viewCount, b.like);
+          b.getNumber(), b.getTitle(), b.getWriter(), b.getRegisteredDate(), b.getViewCount(), b.getLike());
       System.out.println("-------------------------------------------------------------");
 
     }
@@ -48,15 +52,14 @@ public class BoardHandler {
       System.out.println();
 
     }else {
-      board.viewCount++;
-      System.out.printf("제목: %s ", board.title);
-      System.out.printf("작성자: %s\n", board.writer);
-      System.out.printf("내용: %s\n", board.content);
-      System.out.printf("등록일: %s ", board.registeredDate);
-      System.out.printf("조회수: %d\n", board.viewCount);
+      board.setViewCount(board.getViewCount() + 1);
+      System.out.printf("제목: %s ", board.getTitle());
+      System.out.printf("작성자: %s\n", board.getWriter());
+      System.out.printf("내용: %s\n", board.getContent());
+      System.out.printf("등록일: %s ", board.getRegisteredDate());
+      System.out.printf("조회수: %d\n", board.getViewCount());
       System.out.println("-------------------------------------------------------------");
       return;
-
     }
   }
 
@@ -70,16 +73,15 @@ public class BoardHandler {
       System.out.println();
 
     }else {
-
-      String title = Prompt.inputString(String.format("제목(%s)? ",board.title));
-      String content = Prompt.inputString(String.format("내용(%s)? ",board.content));
+      String title = Prompt.inputString(String.format("제목(%s)? ",board.getTitle()));
+      String content = Prompt.inputString(String.format("내용(%s)? ",board.getContent()));
 
       String userChoice = Prompt.inputString("정말 수정하시겠습니까?(y/N) ");
       if(userChoice.equalsIgnoreCase("y")) {
-        board.title = title;
-        board.content = content;
+        board.setTitle(title);
+        board.setContent(content);
         Date reRegisteredDate = new Date(System.currentTimeMillis());
-        board.registeredDate = reRegisteredDate;
+        board.setRegisteredDate(reRegisteredDate);
         System.out.println("게시물 수정이 완료되었습니다.");
         System.out.println();
       }else {

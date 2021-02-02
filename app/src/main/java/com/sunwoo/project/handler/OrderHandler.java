@@ -6,14 +6,18 @@ import com.sunwoo.util.Prompt;
 
 public class OrderHandler {
 
-  MemberList memberList;
-  ProductList productList;
+  private MemberHandler memberHandler;
+  private ProductHandler productHandler;
 
-  public OrderList orderList = new OrderList();
+  private OrderList orderList = new OrderList();
 
-  public OrderHandler(MemberList memberList, ProductList productList){
-    this.memberList = memberList;
-    this.productList = productList;
+  public OrderList getOrderList(OrderList orderList) {
+    return this.orderList;
+  }
+
+  public OrderHandler(MemberHandler memberHandler, ProductHandler productHandler){
+    this.memberHandler = memberHandler;
+    this.productHandler = productHandler;
   }
 
   public void add() {
@@ -22,19 +26,19 @@ public class OrderHandler {
 
     Order o = new Order();
 
-    o.number = Prompt.inputInt("주문 번호: ");
+    o.setNumber(Prompt.inputInt("주문 번호: "));
 
-    o.memberId = inputMemberId(); 
-    if(o.memberId == null) {
+    o.setMemberId(memberHandler.inputMemberId()); 
+    if(o.getMemberId() == null) {
       System.out.println("주문 등록을 취소합니다.");
       System.out.println();
       return;
     }
 
-    o.products = inputProducts("상품명(enter(완료)): ");
+    o.setProducts(productHandler.inputProducts("상품명(enter(완료)): "));
 
-    o.request = Prompt.inputString("요청사항: ");
-    o.registeredDate = new Date(System.currentTimeMillis());
+    o.setRequest(Prompt.inputString("요청사항: "));
+    o.setRegisteredDate(new Date(System.currentTimeMillis()));
 
     orderList.add(o);
 
@@ -48,7 +52,7 @@ public class OrderHandler {
     for(Order o : orders) {
 
       System.out.printf("주문 번호: %d 회원 아이디: %s\n주문한 상품: %s\n총 가격: %d원\n주문 날짜: %s 요청사항: %s\n"
-          , o.number, o.memberId, o.products, o.totalPrice, o.registeredDate, o.request);
+          , o.getNumber(), o.getMemberId(), o.getProducts(), o.getTotalPrice(), o.getRegisteredDate(), o.getRequest());
       System.out.println("----------------------------------------------------------");
 
     }
@@ -66,11 +70,11 @@ public class OrderHandler {
       System.out.println("해당 번호의 주문이 없습니다.");
       System.out.println();
     }else {
-      System.out.printf("회원 아이디: %s\n", order.memberId);
-      System.out.printf("주문한 상품: %s\n", order.products);
-      System.out.printf("주문 날짜: %s\n", order.registeredDate);
-      System.out.printf("요청사항: %s\n", order.request);
-      System.out.printf("총 가격: %d원\n", order.totalPrice);
+      System.out.printf("회원 아이디: %s\n", order.getMemberId());
+      System.out.printf("주문한 상품: %s\n", order.getProducts());
+      System.out.printf("주문 날짜: %s\n", order.getRegisteredDate());
+      System.out.printf("요청사항: %s\n", order.getRequest());
+      System.out.printf("총 가격: %d원\n", order.getTotalPrice());
       System.out.println("-------------------------------------------------------------");
       return;
 
@@ -88,15 +92,15 @@ public class OrderHandler {
 
     }else {
 
-      String products = inputProducts(String.format("주문할 상품(%s)?(완료: 빈문자열)",order.products));
+      String products = productHandler.inputProducts(String.format("주문할 상품(%s)?(완료: 빈문자열)",order.getProducts()));
 
-      String request = Prompt.inputString(String.format("요청사항(%s)? ",order.request));
+      String request = Prompt.inputString(String.format("요청사항(%s)? ",order.getRequest()));
 
       String userChoice = Prompt.inputString("정말 수정하시겠습니까?(y/N) ");
       if(userChoice.equalsIgnoreCase("y")) {
-        order.products = products;
-        order.request = request;
-        order.registeredDate = new Date(System.currentTimeMillis());
+        order.setProducts(products);
+        order.setRequest(request);
+        order.setRegisteredDate(new Date(System.currentTimeMillis()));
         System.out.println("주문 수정이 완료되었습니다.");
         System.out.println();
       }else {
@@ -106,7 +110,6 @@ public class OrderHandler {
       }
     }
   }
-
 
   public void delete() {
     System.out.println("[주문 삭제]");
@@ -133,35 +136,16 @@ public class OrderHandler {
     }
   }
 
-
-  String inputMemberId(){
+  int inputOrderNumber(String promptTitle) {
+    int number = -1;
     while(true) {
-      String id = Prompt.inputString("회원 아이디(enter(취소)): ");
-      if(id.equals("")) {
-        return null;
+      number = Prompt.inputInt(promptTitle);
+      if(number == -1) {
+        return -1;
+      }else if(orderList.exist(number)) {
+        return number;
       }
-      if(this.memberList.exist(id)) {
-        return id;
-      }
-      System.out.println("등록된 회원이 아닙니다.");
-    }
-  }
-
-  String inputProducts(String promptTitle) {
-    String products = "";
-    while(true) {
-      String name = Prompt.inputString(promptTitle);
-      if(name.isEmpty()) {
-        return products;
-      }
-      if(this.productList.exist(name)) {
-        if(products.length() != 0) {
-          products += ", ";
-        }
-        products += name;
-      }else {
-        System.out.println("등록된 상품이 아닙니다.");
-      }
+      System.out.println("잘못된 주문 번호 입니다.");
     }
   }
 

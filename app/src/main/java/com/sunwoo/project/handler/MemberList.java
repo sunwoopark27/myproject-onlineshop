@@ -3,12 +3,11 @@ package com.sunwoo.project.handler;
 import com.sunwoo.project.domain.Member;
 
 public class MemberList {
-  Node first;
-  Node last;
-  int size = 0;
+  private Node first;
+  private Node last;
+  private int size = 0;
 
-
-  void add(Member m) {
+  public void add(Member m) {
     Node node = new Node(m);
 
     if(first == null) {
@@ -22,7 +21,7 @@ public class MemberList {
     this.size++;
   }
 
-  Member[] toArray() {
+  public Member[] toArray() {
 
     Member[] arr = new Member[size];
     Node cursor = first;
@@ -35,11 +34,11 @@ public class MemberList {
     return arr;
   }
 
-  Member get(int memberNo) {
+  public Member get(int memberNo) {
 
     Node cursor = first;
     while(cursor != null) {
-      if(cursor.member.number == memberNo) {
+      if(cursor.member.getNumber() == memberNo) {
         return cursor.member;
       }
       cursor = cursor.next;
@@ -47,10 +46,10 @@ public class MemberList {
     return null;
   }
 
-  boolean exist(String name){
+  public boolean exist(String name){
     Node cursor = first;
     while(cursor != null) {
-      if(name.equals(cursor.member.name)) {
+      if(name.equals(cursor.member.getName())) {
         return true;
       }
       cursor = cursor.next;
@@ -58,7 +57,7 @@ public class MemberList {
     return false;
   }
 
-  void delete(int memberNo) {
+  public void delete(int memberNo) {
 
     Member member = get(memberNo);
     if(member == null) {
