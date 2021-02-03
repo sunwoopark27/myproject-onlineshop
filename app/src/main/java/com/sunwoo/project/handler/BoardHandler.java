@@ -1,6 +1,7 @@
 package com.sunwoo.project.handler;
 
 import java.sql.Date;
+import com.sunwoo.project.App;
 import com.sunwoo.project.domain.Board;
 import com.sunwoo.util.List;
 import com.sunwoo.util.Prompt;
@@ -11,6 +12,51 @@ public class BoardHandler {
 
   public List getBoardList(List boardList) {// 일단 관행을 따르는것?
     return this.boardList;
+  }
+
+  public void service(String choice) {
+
+    loop:
+      while(true) {
+        System.out.printf("[메인 > 게시판 > %s]\n", choice);
+        System.out.println("1. 등록");
+        System.out.println("2. 목록");
+        System.out.println("3. 상세 보기");
+        System.out.println("4. 수정");
+        System.out.println("5. 삭제");
+        System.out.println("0. 이전 메뉴");
+        System.out.println();
+
+        String command = com.sunwoo.util.Prompt.inputString("명령> ");
+        System.out.println();
+
+        switch(command) {
+          case "1" :
+            this.add();
+            break;
+          case "2" :
+            this.list();
+            break;
+          case "3" :
+            this.detail();
+            break;
+          case "4" :
+            this.update();
+            break;
+          case "5" :
+            this.delete();
+            break;
+          case "0" :
+            System.out.println("게시판으로 돌아갑니다.");
+            System.out.println();
+            App.chooseBoard();
+          default :
+            System.out.println("잘못된 메뉴 번호 입니다.");
+            System.out.println();
+
+        }
+        System.out.println();
+      }
   }
 
   public void add() {

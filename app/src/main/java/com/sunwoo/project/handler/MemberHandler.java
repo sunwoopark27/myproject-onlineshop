@@ -13,9 +13,53 @@ public class MemberHandler {
     return this.memberList;
   }
 
-  public void add(){
-    System.out.println("[회원 등록]");
+  public void service() {
 
+    loop:
+      while(true) {
+        System.out.println("[메인 > 회원]");
+        System.out.println("1. 등록");
+        System.out.println("2. 목록");
+        System.out.println("3. 상세 보기");
+        System.out.println("4. 수정");
+        System.out.println("5. 삭제");
+        System.out.println("0. 이전 메뉴");
+        System.out.println();
+
+        String command = com.sunwoo.util.Prompt.inputString("명령> ");
+        System.out.println();
+
+        switch(command) {
+          case "1" :
+            this.add();
+            break;
+          case "2" :
+            this.list();
+            break;
+          case "3" :
+            this.detail();
+            break;
+          case "4" :
+            this.update();
+            break;
+          case "5" :
+            this.delete();
+            break;
+          case "0" :
+            System.out.println("메인으로 돌아갑니다.");
+            System.out.println();
+            break loop;
+          default :
+            System.out.println("잘못된 메뉴 번호 입니다.");
+            System.out.println();
+
+        }
+        System.out.println();
+      }
+  }
+
+  public void add(){
+    System.out.println("[메인 > 회원 > 등록]");
     Member m = new Member();
 
     m.setNumber(Prompt.inputInt("회원 번호: "));
@@ -53,7 +97,7 @@ public class MemberHandler {
 
 
   public void detail() {
-    System.out.println("[회원 정보]");
+    System.out.println("[메인 > 회원 > 정보]");
 
     Member member = findByNo(Prompt.inputInt("번호? "));
 
@@ -75,7 +119,7 @@ public class MemberHandler {
   }
 
   public void update() {
-    System.out.println("[회원 정보 수정]");
+    System.out.println("[메인 > 회원 > 수정]");
 
     Member member = findByNo(Prompt.inputInt("번호? "));
     if(member == null) {
@@ -111,7 +155,7 @@ public class MemberHandler {
 
 
   public void delete() {
-    System.out.println("[회원 정보 삭제]");
+    System.out.println("[메인 > 회원 > 삭제]");
 
     int no = Prompt.inputInt("번호? ");
     Member member = findByNo(no);

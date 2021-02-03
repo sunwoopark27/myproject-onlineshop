@@ -9,11 +9,13 @@ import com.sunwoo.util.Prompt;
 
 public class App {
 
+  static BoardHandler boardProduct = new BoardHandler();
+  static BoardHandler boardShipping = new BoardHandler();
+  static BoardHandler boardExchangeReturn = new BoardHandler();
+  static BoardHandler boardReview = new BoardHandler();
+
   public static void main(String[] args) {
 
-    BoardHandler boardProduct = new BoardHandler();
-    BoardHandler boardShipping = new BoardHandler();
-    BoardHandler boardExchangeReturn = new BoardHandler();
 
     MemberHandler memberHandler = new MemberHandler();
 
@@ -23,131 +25,89 @@ public class App {
 
     ShippingHandler shippingHandler = new ShippingHandler(memberHandler, orderHandler);
 
-    while(true) {
-      System.out.println("▶명령어◀");
-      System.out.println("<회원> 등록/목록/상세/수정/삭제");
-      System.out.println("<상품> 등록/목록/상세/수정/삭제");
-      System.out.println("<주문> 등록/목록/상세/수정/삭제");
-      System.out.println("<배송> 등록/목록/상세/수정/삭제");
-      System.out.println("<문의> Q&A");
-      System.out.println();
+    loop: 
+      while(true) {
+        System.out.println("▷ 메인 ◁");
+        System.out.println("1. 회원");
+        System.out.println("2. 상품");
+        System.out.println("3. 주문");
+        System.out.println("4. 배송");
+        System.out.println("5. 게시판");
+        System.out.println("0. 종료");
+        System.out.println();
 
-      String command = Prompt.inputString("명령> ");
+        String command = Prompt.inputString("명령> ");
+        System.out.println();
 
-      if(command.equalsIgnoreCase("회원 등록")) {
-        memberHandler.add();
+        switch(command) {
 
-      }else if(command.equalsIgnoreCase("회원 목록")) {
-        memberHandler.list();
-
-      }else if(command.equalsIgnoreCase("회원 상세")) {
-        memberHandler.detail();
-
-      }else if(command.equalsIgnoreCase("회원 수정")) {
-        memberHandler.update();
-
-      }else if(command.equalsIgnoreCase("회원 삭제")) {
-        memberHandler.delete();
-
-      }else if (command.equalsIgnoreCase("상품 등록")) {
-        productHandler.add();
-
-      }else if (command.equalsIgnoreCase("상품 목록")) {
-        productHandler.list();
-
-      }else if (command.equalsIgnoreCase("상품 상세")) {
-        productHandler.detail();
-
-      }else if (command.equalsIgnoreCase("상품 수정")) {
-        productHandler.update();
-
-      }else if (command.equalsIgnoreCase("상품 삭제")) {
-        productHandler.delete();
-
-      }else if(command.equalsIgnoreCase("주문 등록")) {
-        orderHandler.add();
-
-      }else if(command.equalsIgnoreCase("주문 목록")) {
-        orderHandler.list();
-
-      }else if(command.equalsIgnoreCase("주문 상세")) {
-        orderHandler.detail();
-
-      }else if(command.equalsIgnoreCase("주문 수정")) {
-        orderHandler.update();
-
-      }else if(command.equalsIgnoreCase("주문 삭제")) {
-        orderHandler.delete();
-
-      }else if (command.equalsIgnoreCase("배송 등록")) {
-        shippingHandler.add();
-
-      }else if (command.equalsIgnoreCase("배송 목록")) {
-        shippingHandler.list();
-
-      }else if(command.equalsIgnoreCase("배송 상세")) {
-        shippingHandler.detail();
-
-      }else if(command.equalsIgnoreCase("배송 수정")) {
-        shippingHandler.update();
-
-      }else if(command.equalsIgnoreCase("배송 삭제")) {
-        shippingHandler.delete();
-
-
-      }else if(command.equals("Q&A")) {
-        while(true) {
-          System.out.println("[Q&A]");
-          System.out.println("▶명령어◀");
-          System.out.println("<상품> 문의/목록/상세/수정/삭제");
-          System.out.println("<배송> 문의/문의 목록");
-          System.out.println("<교환/반품> 문의/문의 목록");
-          System.out.println("<뒤로가기> back");
-          System.out.println();
-          command = Prompt.inputString("명령> ");
-
-          if (command.equalsIgnoreCase("상품 문의")) {
-            boardProduct.add();
-
-          }else if (command.equalsIgnoreCase("상품 문의 목록")) {
-            boardProduct.list();
-
-          }else if (command.equalsIgnoreCase("상품 문의 상세")) {
-            boardProduct.detail();
-
-          }else if (command.equalsIgnoreCase("상품 문의 수정")) {
-            boardProduct.update();
-
-          }else if (command.equalsIgnoreCase("상품 문의 삭제")) {
-            boardProduct.delete();
-
-          }else if (command.equalsIgnoreCase("배송 문의")) {
-            boardShipping.add();
-
-          }else if (command.equalsIgnoreCase("배송 문의 목록")) {
-            boardShipping.list();
-
-          }else if (command.equalsIgnoreCase("교환/반품 문의")) {
-            boardExchangeReturn.add();
-
-          }else if (command.equalsIgnoreCase("교환/반품 문의 목록")) {
-            boardExchangeReturn.list();
-
-          }else if (command.equalsIgnoreCase("back")) {
-
+          case "1" :
+            memberHandler.service();
             break;
-          }
+
+          case "2" :
+            productHandler.service();
+            break;
+
+          case "3" :
+            orderHandler.service();
+            break;
+
+          case "4" :
+            shippingHandler.service();
+            break;
+
+          case "5" :
+            chooseBoard();
+            break;
+
+          case "0" :
+
+            System.out.println("이용해주셔서 감사합니다.");
+            break loop;
+
+          default :
+
+            System.out.println("메뉴 번호가 맞지 않습니다.");
+
         }
-      }else if(command.equalsIgnoreCase("quit") || command.equalsIgnoreCase("exit")) {
-        System.out.println("이용해주셔서 감사합니다!");
-        break;
-      }else {
-        System.out.println("실행할 수 없는 명령어 입니다.");
+      }
+  }
+  public static void chooseBoard() {
+    loop:
+      while(true) {
+        System.out.println("[메인 > 게시판]");
+        System.out.println("1. 상품 문의");
+        System.out.println("2. 배송 문의");
+        System.out.println("3. 교환/반품 문의");
+        System.out.println("4. 리뷰");
+        System.out.println("0. 이전 메뉴");
+        System.out.println();
+
+        String command = com.sunwoo.util.Prompt.inputString("명령> ");
+        System.out.println();
+
+        switch(command) {
+          case "1" :
+            boardProduct.service("상품 문의");
+
+          case "2" :
+            boardShipping.service("배송 문의");
+
+          case "3" :
+            boardExchangeReturn.service("교환/반품 문의");
+
+          case "4" :
+            boardReview.service("리뷰");
+
+          case "0" :
+            System.out.println("메인으로 돌아갑니다.");
+            break loop;
+          default :
+            System.out.println("잘못된 메뉴 번호 입니다.");
+
+        }
         System.out.println();
       }
-    }
-    Prompt.close();
   }
-
-
 }
