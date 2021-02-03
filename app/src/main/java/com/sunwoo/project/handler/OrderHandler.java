@@ -2,6 +2,7 @@ package com.sunwoo.project.handler;
 
 import java.sql.Date;
 import com.sunwoo.project.domain.Order;
+import com.sunwoo.util.List;
 import com.sunwoo.util.Prompt;
 
 public class OrderHandler {
@@ -9,9 +10,9 @@ public class OrderHandler {
   private MemberHandler memberHandler;
   private ProductHandler productHandler;
 
-  private OrderList orderList = new OrderList();
+  private List orderList = new List();
 
-  public OrderList getOrderList(OrderList orderList) {
+  public List getOrderList(List orderList) {
     return this.orderList;
   }
 
@@ -48,11 +49,11 @@ public class OrderHandler {
   public void list() {
     System.out.println("[주문 목록]");
 
-    Order[] orders = orderList.toArray();
-    for(Order o : orders) {
-
-      System.out.printf("주문 번호: %d 회원 아이디: %s\n주문한 상품: %s\n총 가격: %d원\n주문 날짜: %s 요청사항: %s\n"
-          , o.getNumber(), o.getMemberId(), o.getProducts(), o.getTotalPrice(), o.getRegisteredDate(), o.getRequest());
+    Object[] list = orderList.toArray();
+    for(Object obj : list) {
+      Order o = (Order)obj;
+      System.out.printf("주문 번호: %d 회원 아이디: %s\n주문 날짜: %s\n"
+          , o.getNumber(), o.getMemberId(), o.getRegisteredDate());
       System.out.println("----------------------------------------------------------");
 
     }
@@ -64,7 +65,7 @@ public class OrderHandler {
   public void detail() {
     System.out.println("[주문 상세보기]");
 
-    Order order = orderList.get(Prompt.inputInt("번호? "));
+    Order order = findByNo(Prompt.inputInt("번호? "));
 
     if (order == null) {
       System.out.println("해당 번호의 주문이 없습니다.");
@@ -84,7 +85,7 @@ public class OrderHandler {
   public void update() {
     System.out.println("[주문 수정하기]");
 
-    Order order = orderList.get(Prompt.inputInt("번호? "));
+    Order order = findByNo(Prompt.inputInt("번호? "));
     if(order == null) {
 
       System.out.println("해당 번호의 주문이 없습니다.");
@@ -115,8 +116,8 @@ public class OrderHandler {
     System.out.println("[주문 삭제]");
 
     int no = Prompt.inputInt("번호? ");
-    Order order = orderList.get(no);
-    if(order == null) {
+    int index = indexOf(no);
+    if(index == -1) {
       System.out.println("해당 번호의 주문이 없습니다.");
       System.out.println();
 
@@ -124,7 +125,7 @@ public class OrderHandler {
       String userChoice = Prompt.inputString("정말 삭제하시겠습니까?(y/N) ");
 
       if(userChoice.equalsIgnoreCase("y")) {
-        orderList.delete(no);
+        orderList.delete(index);
         System.out.println("주문 삭제를 완료하였습니다.");
         System.out.println();
       }else {
@@ -142,11 +143,34 @@ public class OrderHandler {
       number = Prompt.inputInt(promptTitle);
       if(number == -1) {
         return -1;
-      }else if(orderList.exist(number)) {
+      }else if(findByNo(number) != null) {
         return number;
       }
       System.out.println("잘못된 주문 번호 입니다.");
     }
   }
+
+  private int indexOf(int orderNo) {
+    Object[] list = orderList.toArray();
+    for(int i = 0; i < list.length; i++) {
+      Order o = (Order)list[i];
+      if(o.getNumber() == orderNo) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  private Order findByNo(int orderNo) {
+    Object[] list = orderList.toArray();
+    for(Object obj : list) {
+      Order o = (Order)obj;
+      if(o.getNumber() == orderNo) {
+        return o;
+      }
+    }
+    return null;
+  }
+
 
 }

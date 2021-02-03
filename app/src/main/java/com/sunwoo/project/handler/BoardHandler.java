@@ -2,13 +2,14 @@ package com.sunwoo.project.handler;
 
 import java.sql.Date;
 import com.sunwoo.project.domain.Board;
+import com.sunwoo.util.List;
 import com.sunwoo.util.Prompt;
 
 public class BoardHandler {
 
-  private BoardList boardList = new BoardList();
+  private List boardList = new List();
 
-  public BoardList getBoardList(BoardList boardList) {// 일단 관행을 따르는것?
+  public List getBoardList(List boardList) {// 일단 관행을 따르는것?
     return this.boardList;
   }
 
@@ -32,9 +33,10 @@ public class BoardHandler {
   public void list() {
     System.out.println("[게시글 목록]");
 
-    Board[] boards = boardList.toArray();
+    Object[] list = boardList.toArray();
 
-    for(Board b : boards) {
+    for(Object obj : list) {
+      Board b = (Board)obj;
 
       System.out.printf("번호: %d 제목: %s 작성자: %s 등록일: %s\n조회수: %d 좋아요: %d\n",
           b.getNumber(), b.getTitle(), b.getWriter(), b.getRegisteredDate(), b.getViewCount(), b.getLike());
@@ -46,7 +48,7 @@ public class BoardHandler {
   public void detail() {
     System.out.println("[게시글 상세보기]");
 
-    Board board = boardList.get(Prompt.inputInt("번호? "));
+    Board board = findByNo(Prompt.inputInt("번호? "));
     if (board == null) {
       System.out.println("해당 번호의 게시글이 없습니다.");
       System.out.println();
@@ -66,7 +68,7 @@ public class BoardHandler {
   public void update() {
     System.out.println("[게시글 수정하기]");
 
-    Board board = boardList.get(Prompt.inputInt("번호? "));
+    Board board = findByNo(Prompt.inputInt("번호? "));
     if(board == null) {
 
       System.out.println("해당 번호의 게시글이 없습니다.");
@@ -96,7 +98,7 @@ public class BoardHandler {
     System.out.println("[게시글 삭제]");
 
     int no = Prompt.inputInt("번호? ");
-    Board board = boardList.get(no);
+    Board board = findByNo(no);
     if(board == null) {
       System.out.println("해당 번호의 게시글이 없습니다.");
       System.out.println();
@@ -106,7 +108,7 @@ public class BoardHandler {
 
       if(userChoice.equalsIgnoreCase("y")) {
 
-        boardList.delete(no);
+        boardList.delete(board);
 
         System.out.println("게시글을 삭제하였습니다.");
         System.out.println();
@@ -118,6 +120,18 @@ public class BoardHandler {
         return;
       }
     }
+  }
+
+
+  private Board findByNo(int boardNo) {
+    Object[] list = boardList.toArray();
+    for(Object obj : list) {
+      Board b = (Board)obj;
+      if(b.getNumber() == boardNo) {
+        return b;
+      }
+    }
+    return null;
   }
 
 }

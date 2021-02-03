@@ -2,13 +2,14 @@ package com.sunwoo.project.handler;
 
 import java.sql.Date;
 import com.sunwoo.project.domain.Member;
+import com.sunwoo.util.List;
 import com.sunwoo.util.Prompt;
 
 public class MemberHandler {
 
-  private MemberList memberList = new MemberList();
+  private List memberList = new List();
 
-  public MemberList getMemberList() {
+  public List getMemberList() {
     return this.memberList;
   }
 
@@ -36,14 +37,14 @@ public class MemberHandler {
   public void list() {
     System.out.println("[회원 목록]");
 
-    Member[] members = memberList.toArray();
+    Object[] list = memberList.toArray();
 
-    for(Member m : members) {
+    for(Object obj : list) {
+      Member m = (Member)obj;
 
-      System.out.printf("회원 번호: %d 회원 아이디: %s 이름: %s\n전화번호: %s 주소: %s 메일: %s\n가입 날짜: %s\n"
-          ,m.getNumber(), m.getId(), m.getName(), m.getTel(), m.getAddress(), m.getEmail(), m.getJoinDate());
+      System.out.printf("번호: %d 아이디: %s 이름: %s\n가입 날짜: %s\n"
+          ,m.getNumber(), m.getId(), m.getName(), m.getJoinDate());
       System.out.println("--------------------------------------------------");
-
 
     }
 
@@ -54,7 +55,7 @@ public class MemberHandler {
   public void detail() {
     System.out.println("[회원 정보]");
 
-    Member member = memberList.get(Prompt.inputInt("번호? "));
+    Member member = findByNo(Prompt.inputInt("번호? "));
 
     if (member == null) {
       System.out.println("해당 번호의 회원이 없습니다.");
@@ -76,7 +77,7 @@ public class MemberHandler {
   public void update() {
     System.out.println("[회원 정보 수정]");
 
-    Member member = memberList.get(Prompt.inputInt("번호? "));
+    Member member = findByNo(Prompt.inputInt("번호? "));
     if(member == null) {
 
       System.out.println("해당 번호의 게시글이 없습니다.");
@@ -113,7 +114,7 @@ public class MemberHandler {
     System.out.println("[회원 정보 삭제]");
 
     int no = Prompt.inputInt("번호? ");
-    Member member = memberList.get(no);
+    Member member = findByNo(no);
     if(member == null) {
       System.out.println("해당 번호의 회원이 없습니다.");
       System.out.println();
@@ -123,7 +124,7 @@ public class MemberHandler {
 
       if(userChoice.equalsIgnoreCase("y")) {
 
-        memberList.delete(no);
+        memberList.delete(member);
 
         System.out.println("회원 정보 삭제를 완료하였습니다.");
         System.out.println();
@@ -142,7 +143,7 @@ public class MemberHandler {
       if(id.equals("")) {
         return null;
       }
-      if(this.memberList.exist(id)) {
+      if(findById(id) != null) {
         return id;
       }
       System.out.println("등록된 회원이 아닙니다.");
@@ -154,12 +155,33 @@ public class MemberHandler {
       String id = Prompt.inputString(promptTitle);
       if(id.length() == 0) {
         return null;
-      }else if(this.memberList.exist(id)) {
+      }else if(findById(id) != null) {
         return id;
       }
       System.out.println("잘못된 아이디 입니다.");
     }
   }
 
+  private Member findByNo(int memberNo) {
+    Object[] list = memberList.toArray();
+    for(Object obj : list) {
+      Member m = (Member)obj;
+      if(m.getNumber() == memberNo) {
+        return m;
+      }
+    }
+    return null;
+  }
+
+  private Member findById(String id) {
+    Object[] list = memberList.toArray();
+    for(Object obj : list) {
+      Member m = (Member)obj;
+      if(m.getId().equals(id)) {
+        return m;
+      }
+    }
+    return null;
+  }
 
 }

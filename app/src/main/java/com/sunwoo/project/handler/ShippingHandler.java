@@ -1,6 +1,7 @@
 package com.sunwoo.project.handler;
 
 import com.sunwoo.project.domain.Shipping;
+import com.sunwoo.util.List;
 import com.sunwoo.util.Prompt;
 
 public class ShippingHandler {
@@ -8,7 +9,7 @@ public class ShippingHandler {
   private MemberHandler memberHandler;
   private OrderHandler orderHandler;
 
-  public ShippingList shippingList = new ShippingList();
+  public List shippingList = new List();
 
   public ShippingHandler(MemberHandler memberHandler, OrderHandler orderHandler) {
     this.memberHandler = memberHandler;
@@ -48,13 +49,12 @@ public class ShippingHandler {
   public void list() {
     System.out.println("[배송 목록]");
 
-    Shipping[] shippings = shippingList.toArray();
-    for(Shipping s : shippings) {
+    Object[] list = shippingList.toArray();
+    for(Object obj : list) {
+      Shipping s = (Shipping)obj;
 
-      String statusLabel = getStatusLabel(s.getStatus());
-
-      System.out.printf("배송 번호: %d 고객 아이디: %s 주문 번호: %d\n운송장 번호: %d 배송상태: %s\n담당자: %s\n"
-          ,s.getNumber(), s.getMemberId(), s.getOrderNumber(), s.getTrackingNumber(), statusLabel, s.getManager());
+      System.out.printf("배송 번호: %d 고객 아이디: %s\n운송장 번호: %d\n"
+          ,s.getNumber(), s.getMemberId(), s.getTrackingNumber());
       System.out.println("-----------------------------------------");
 
     }
@@ -64,7 +64,7 @@ public class ShippingHandler {
   public void detail() {
     System.out.println("[배송 상세보기]");
 
-    Shipping shipping = shippingList.get(Prompt.inputInt("번호? "));
+    Shipping shipping = findByNo(Prompt.inputInt("번호? "));
 
     if (shipping == null) {
       System.out.println("해당 번호의 배송이 없습니다.");
@@ -87,7 +87,7 @@ public class ShippingHandler {
   public void update() {
     System.out.println("[배송 정보 수정]");
 
-    Shipping shipping = shippingList.get(Prompt.inputInt("번호? "));
+    Shipping shipping = findByNo(Prompt.inputInt("번호? "));
     if(shipping == null) {
 
       System.out.println("해당 번호의 배송이 없습니다.");
@@ -138,7 +138,7 @@ public class ShippingHandler {
     System.out.println("[배송 삭제]");
 
     int no = Prompt.inputInt("번호? ");
-    Shipping shipping = shippingList.get(no);
+    Shipping shipping = findByNo(no);
     if(shipping == null) {
       System.out.println("해당 번호의 배송이 없습니다.");
       System.out.println();
@@ -148,7 +148,7 @@ public class ShippingHandler {
 
       if(userChoice.equalsIgnoreCase("y")) {
 
-        shippingList.delete(no);
+        shippingList.delete(shipping);
         System.out.println("배송 삭제가 완료되었습니다.");
         System.out.println();
         return;
@@ -172,8 +172,15 @@ public class ShippingHandler {
     }
   }
 
-
-
-
+  private Shipping findByNo(int shippingNo) {
+    Object[] list = shippingList.toArray();
+    for(Object obj : list) {
+      Shipping s = (Shipping)obj;
+      if(s.getNumber() == shippingNo) {
+        return s;
+      }
+    }
+    return null;
+  }
 
 }
