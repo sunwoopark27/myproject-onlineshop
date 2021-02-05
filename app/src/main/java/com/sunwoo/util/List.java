@@ -3,7 +3,7 @@ package com.sunwoo.util;
 public class List {
   private Node first;
   private Node last;
-  private int size = 0;
+  protected int size = 0;
 
   public void add(Object o) {
     Node node = new Node(o);
@@ -122,6 +122,10 @@ public class List {
       }
     }
     return -1;
+  }
+
+  public int size() { //getter로 쓰지 않아 지금 java의 stack모방중! 
+    return this.size;
   }
 
   static class Node{

@@ -6,6 +6,7 @@ import com.sunwoo.project.handler.OrderHandler;
 import com.sunwoo.project.handler.ProductHandler;
 import com.sunwoo.project.handler.ShippingHandler;
 import com.sunwoo.util.Prompt;
+import com.sunwoo.util.Stack;
 
 public class App {
 
@@ -13,6 +14,8 @@ public class App {
   static BoardHandler boardShipping = new BoardHandler();
   static BoardHandler boardExchangeReturn = new BoardHandler();
   static BoardHandler boardReview = new BoardHandler();
+
+  static Stack commandStack = new Stack();
 
   public static void main(String[] args) {
 
@@ -24,6 +27,7 @@ public class App {
     OrderHandler orderHandler = new OrderHandler(memberHandler, productHandler);
 
     ShippingHandler shippingHandler = new ShippingHandler(memberHandler, orderHandler);
+
 
     loop: 
       while(true) {
@@ -38,6 +42,8 @@ public class App {
 
         String command = Prompt.inputString("명령> ");
         System.out.println();
+
+        commandStack.push(command);
 
         switch(command) {
 
@@ -61,6 +67,9 @@ public class App {
             chooseBoard();
             break;
 
+          case "history" : 
+            printCommandHistory();
+
           case "0" :
 
             System.out.println("이용해주셔서 감사합니다.");
@@ -69,10 +78,12 @@ public class App {
           default :
 
             System.out.println("메뉴 번호가 맞지 않습니다.");
+            System.out.println();
 
         }
       }
   }
+
   public static void chooseBoard() {
     loop:
       while(true) {
@@ -109,5 +120,19 @@ public class App {
         }
         System.out.println();
       }
+  }
+
+  private static void printCommandHistory() {
+    int count = 0;
+    while(commandStack.size() > 0) {
+      System.out.println(commandStack.pop());
+      if(++count % 5 == 0) {
+        String input = Prompt.inputString(": ");
+        if(input.equalsIgnoreCase("q")) {
+          break;
+        }
+
+      }
+    }
   }
 }
