@@ -5,8 +5,12 @@ import com.sunwoo.project.handler.MemberHandler;
 import com.sunwoo.project.handler.OrderHandler;
 import com.sunwoo.project.handler.ProductHandler;
 import com.sunwoo.project.handler.ShippingHandler;
+import com.sunwoo.util.AbstractIterator;
 import com.sunwoo.util.Prompt;
+import com.sunwoo.util.Queue;
+import com.sunwoo.util.QueueIterator;
 import com.sunwoo.util.Stack;
+import com.sunwoo.util.StackIterator;
 
 public class App {
 
@@ -16,8 +20,9 @@ public class App {
   static BoardHandler boardReview = new BoardHandler();
 
   static Stack commandStack = new Stack();
+  static Queue commandQueue = new Queue();
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws CloneNotSupportedException {
 
 
     MemberHandler memberHandler = new MemberHandler();
@@ -44,6 +49,7 @@ public class App {
         System.out.println();
 
         commandStack.push(command);
+        commandQueue.offer(command);
 
         switch(command) {
 
@@ -68,7 +74,12 @@ public class App {
             break;
 
           case "history" : 
-            printCommandHistory();
+            printCommandHistory(new StackIterator(commandStack.clone()));
+            break;
+
+          case "history2" : 
+            printCommandHistory(new QueueIterator(commandQueue.clone()));
+            break;
 
           case "0" :
 
@@ -101,19 +112,24 @@ public class App {
         switch(command) {
           case "1" :
             boardProduct.service("상품 문의");
+            break;
 
           case "2" :
             boardShipping.service("배송 문의");
+            break;
 
           case "3" :
             boardExchangeReturn.service("교환/반품 문의");
+            break;
 
           case "4" :
             boardReview.service("리뷰");
+            break;
 
           case "0" :
             System.out.println("메인으로 돌아갑니다.");
             break loop;
+
           default :
             System.out.println("잘못된 메뉴 번호 입니다.");
 
@@ -122,10 +138,11 @@ public class App {
       }
   }
 
-  private static void printCommandHistory() {
+  private static void printCommandHistory(AbstractIterator iterator) {
+
     int count = 0;
-    while(commandStack.size() > 0) {
-      System.out.println(commandStack.pop());
+    while(iterator.hasNext()) {
+      System.out.println(iterator.next());
       if(++count % 5 == 0) {
         String input = Prompt.inputString(": ");
         if(input.equalsIgnoreCase("q")) {
@@ -135,4 +152,5 @@ public class App {
       }
     }
   }
+
 }

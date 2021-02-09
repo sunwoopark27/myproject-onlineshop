@@ -2,6 +2,7 @@ package com.sunwoo.project.handler;
 
 import com.sunwoo.project.domain.Shipping;
 import com.sunwoo.util.List;
+import com.sunwoo.util.ListIterator;
 import com.sunwoo.util.Prompt;
 
 public class ShippingHandler {
@@ -94,9 +95,10 @@ public class ShippingHandler {
   public void list() {
     System.out.println("[메인 > 배송 > 목록]");
 
-    Object[] list = shippingList.toArray();
-    for(Object obj : list) {
-      Shipping s = (Shipping)obj;
+    ListIterator iterator = new ListIterator(this.shippingList);
+
+    while (iterator.hasNext()) {
+      Shipping s = (Shipping)iterator.next();
 
       System.out.printf("배송 번호: %d 고객 아이디: %s\n운송장 번호: %d\n"
           ,s.getNumber(), s.getMemberId(), s.getTrackingNumber());

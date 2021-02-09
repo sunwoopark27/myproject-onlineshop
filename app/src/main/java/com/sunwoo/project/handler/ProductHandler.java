@@ -2,6 +2,7 @@ package com.sunwoo.project.handler;
 
 import com.sunwoo.project.domain.Product;
 import com.sunwoo.util.List;
+import com.sunwoo.util.ListIterator;
 import com.sunwoo.util.Prompt;
 
 public class ProductHandler {
@@ -73,10 +74,10 @@ public class ProductHandler {
   public void list() {
     System.out.println("[메인 > 상품 > 목록]");
 
-    Object[] list = productList.toArray();
+    ListIterator iterator = new ListIterator(this.productList);
 
-    for(Object obj : list) {
-      Product p = (Product)obj;
+    while (iterator.hasNext()) {
+      Product p = (Product)iterator.next();
       System.out.printf("사진: %s\n이름: %s 가격: %d원\n",p.getPhoto(), p.getName(), p.getPrice());
       System.out.println("-----------------------------------------------------");
 

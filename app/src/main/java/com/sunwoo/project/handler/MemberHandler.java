@@ -3,6 +3,7 @@ package com.sunwoo.project.handler;
 import java.sql.Date;
 import com.sunwoo.project.domain.Member;
 import com.sunwoo.util.List;
+import com.sunwoo.util.ListIterator;
 import com.sunwoo.util.Prompt;
 
 public class MemberHandler {
@@ -81,10 +82,10 @@ public class MemberHandler {
   public void list() {
     System.out.println("[회원 목록]");
 
-    Object[] list = memberList.toArray();
+    ListIterator iterator = new ListIterator(this.memberList);
 
-    for(Object obj : list) {
-      Member m = (Member)obj;
+    while (iterator.hasNext()) {
+      Member m = (Member)iterator.next();
 
       System.out.printf("번호: %d 아이디: %s 이름: %s\n가입 날짜: %s\n"
           ,m.getNumber(), m.getId(), m.getName(), m.getJoinDate());

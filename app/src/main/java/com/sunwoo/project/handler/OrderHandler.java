@@ -3,6 +3,7 @@ package com.sunwoo.project.handler;
 import java.sql.Date;
 import com.sunwoo.project.domain.Order;
 import com.sunwoo.util.List;
+import com.sunwoo.util.ListIterator;
 import com.sunwoo.util.Prompt;
 
 public class OrderHandler {
@@ -94,9 +95,9 @@ public class OrderHandler {
   public void list() {
     System.out.println("[메인 > 주문 > 목록]");
 
-    Object[] list = orderList.toArray();
-    for(Object obj : list) {
-      Order o = (Order)obj;
+    ListIterator iterator = new ListIterator(this.orderList);
+    while (iterator.hasNext()) {
+      Order o = (Order)iterator.next();
       System.out.printf("주문 번호: %d 회원 아이디: %s\n주문 날짜: %s\n"
           , o.getNumber(), o.getMemberId(), o.getRegisteredDate());
       System.out.println("----------------------------------------------------------");
