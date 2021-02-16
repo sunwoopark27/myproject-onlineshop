@@ -3,19 +3,19 @@ package com.sunwoo.project.handler;
 import java.sql.Date;
 import com.sunwoo.project.App;
 import com.sunwoo.project.domain.Board;
+import com.sunwoo.util.Iterator;
 import com.sunwoo.util.List;
-import com.sunwoo.util.ListIterator;
 import com.sunwoo.util.Prompt;
 
 public class BoardHandler {
 
-  private List boardList = new List();
+  private List<Board> boardList = new List<>();
 
-  public List getBoardList(List boardList) {// 일단 관행을 따르는것?
+  public List<Board> getBoardList() {
     return this.boardList;
   }
 
-  public void service(String choice) {
+  public void service(String choice) throws CloneNotSupportedException {
 
     while(true) {
       System.out.printf("[메인 > 게시판 > %s]\n", choice);
@@ -76,13 +76,13 @@ public class BoardHandler {
     System.out.println();
   }
 
-  public void list() {
+  public void list() throws CloneNotSupportedException {
     System.out.println("[게시글 목록]");
 
-    ListIterator iterator = new ListIterator(this.boardList);
+    Iterator<Board> iterator = boardList.iterator();
 
     while(iterator.hasNext()) {
-      Board b = (Board)iterator.next();
+      Board b = iterator.next();
 
       System.out.printf("번호: %d 제목: %s 작성자: %s 등록일: %s\n조회수: %d 좋아요: %d\n",
           b.getNumber(), b.getTitle(), b.getWriter(), b.getRegisteredDate(), b.getViewCount(), b.getLike());
@@ -170,9 +170,8 @@ public class BoardHandler {
 
 
   private Board findByNo(int boardNo) {
-    Object[] list = boardList.toArray();
-    for(Object obj : list) {
-      Board b = (Board)obj;
+    Board[] list = boardList.toArray(new Board[boardList.size()]);
+    for(Board b : list) {
       if(b.getNumber() == boardNo) {
         return b;
       }

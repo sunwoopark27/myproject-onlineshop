@@ -1,19 +1,19 @@
 package com.sunwoo.project.handler;
 
 import com.sunwoo.project.domain.Product;
+import com.sunwoo.util.Iterator;
 import com.sunwoo.util.List;
-import com.sunwoo.util.ListIterator;
 import com.sunwoo.util.Prompt;
 
 public class ProductHandler {
 
-  private List productList = new List();
+  private List<Product> productList = new List<Product>();
 
-  public List getProductList(List productList) {
+  public List<Product> getProductList(List<Product> productList) {
     return this.productList;
   }
 
-  public void service() {
+  public void service() throws CloneNotSupportedException {
 
     loop:
       while(true) {
@@ -71,13 +71,13 @@ public class ProductHandler {
     System.out.println();
   }
 
-  public void list() {
+  public void list() throws CloneNotSupportedException {
     System.out.println("[메인 > 상품 > 목록]");
 
-    ListIterator iterator = new ListIterator(this.productList);
+    Iterator<Product> iterator = productList.iterator();
 
     while (iterator.hasNext()) {
-      Product p = (Product)iterator.next();
+      Product p = iterator.next();
       System.out.printf("사진: %s\n이름: %s 가격: %d원\n",p.getPhoto(), p.getName(), p.getPrice());
       System.out.println("-----------------------------------------------------");
 
@@ -180,9 +180,8 @@ public class ProductHandler {
   }
 
   private Product findByNo(int productNo) {
-    Object[] list = productList.toArray();
-    for(Object obj : list) {
-      Product p = (Product)obj;
+    Product[] list = productList.toArray(new Product[productList.size()]);
+    for(Product p : list) {
       if(p.getNumber() == productNo) {
         return p;
       }
@@ -191,9 +190,8 @@ public class ProductHandler {
   }
 
   private Product findByName(String productName) {
-    Object[] list = productList.toArray();
-    for(Object obj : list) {
-      Product p = (Product)obj;
+    Product[] list = productList.toArray(new Product[productList.size()]);
+    for(Product p : list) {
       if(p.getName().equals(productName)) {
         return p;
       }

@@ -1,8 +1,8 @@
 package com.sunwoo.project.handler;
 
 import com.sunwoo.project.domain.Shipping;
+import com.sunwoo.util.Iterator;
 import com.sunwoo.util.List;
-import com.sunwoo.util.ListIterator;
 import com.sunwoo.util.Prompt;
 
 public class ShippingHandler {
@@ -10,14 +10,14 @@ public class ShippingHandler {
   private MemberHandler memberHandler;
   private OrderHandler orderHandler;
 
-  public List shippingList = new List();
+  public List<Shipping> shippingList = new List<>();
 
   public ShippingHandler(MemberHandler memberHandler, OrderHandler orderHandler) {
     this.memberHandler = memberHandler;
     this.orderHandler = orderHandler;
   }
 
-  public void service() {
+  public void service() throws CloneNotSupportedException {
 
     loop:
       while(true) {
@@ -92,13 +92,13 @@ public class ShippingHandler {
     System.out.println();
   }
 
-  public void list() {
+  public void list() throws CloneNotSupportedException {
     System.out.println("[메인 > 배송 > 목록]");
 
-    ListIterator iterator = new ListIterator(this.shippingList);
+    Iterator<Shipping> iterator = shippingList.iterator();
 
     while (iterator.hasNext()) {
-      Shipping s = (Shipping)iterator.next();
+      Shipping s = iterator.next();
 
       System.out.printf("배송 번호: %d 고객 아이디: %s\n운송장 번호: %d\n"
           ,s.getNumber(), s.getMemberId(), s.getTrackingNumber());
@@ -220,9 +220,8 @@ public class ShippingHandler {
   }
 
   private Shipping findByNo(int shippingNo) {
-    Object[] list = shippingList.toArray();
-    for(Object obj : list) {
-      Shipping s = (Shipping)obj;
+    Shipping[] list = shippingList.toArray(new Shipping[shippingList.size()]);
+    for(Shipping s : list) {
       if(s.getNumber() == shippingNo) {
         return s;
       }

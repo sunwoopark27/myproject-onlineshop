@@ -1,12 +1,14 @@
 package com.sunwoo.util;
 
-public class List {
-  private Node first;
-  private Node last;
+import java.lang.reflect.Array;
+
+public class List<E> {
+  private Node<E> first;
+  private Node<E> last;
   protected int size = 0;
 
-  public void add(Object o) {
-    Node node = new Node(o);
+  public void add(E o) {
+    Node<E> node = new Node<>(o);
 
     if(first == null) {
       first = node;
@@ -24,7 +26,7 @@ public class List {
   public Object[] toArray() {
 
     Object[] arr = new Object[size];
-    Node cursor = first;
+    Node<E> cursor = first;
     int i = 0;
     while(cursor != null) {
       arr[i++] = cursor.obj;
@@ -34,13 +36,32 @@ public class List {
     return arr;
   }
 
-  public Object get(int index) {
+  @SuppressWarnings("unchecked")
+  public E[] toArray(E[] arr) {
+
+    if(arr.length < size) {
+      // 파라미터로 받은 배열이 현재 저장된 항목의 크기보다 작으면
+      // 새배열 만든다.
+      arr = (E[]) Array.newInstance(arr.getClass().getComponentType(), size);
+    }
+
+    Node<E> cursor = first;
+    int i = 0;
+    while(cursor != null) {
+      arr[i++] = cursor.obj;
+      cursor = cursor.next;
+    }
+
+    return arr;
+  }
+
+  public E get(int index) {
 
     if(index < 0 || index >= size) {
       return null;
     }
 
-    Node cursor = first;
+    Node<E> cursor = first;
     int count = 0;
     while(cursor != null) {
       if(index == count++) {
@@ -51,9 +72,9 @@ public class List {
     return null;
   }
 
-  public boolean delete (Object obj) {
+  public boolean delete (E obj) {
 
-    Node cursor = first;
+    Node<E> cursor = first;
     while(cursor != null) {
       if(cursor.obj.equals(obj)) {
         this.size--;
@@ -79,14 +100,14 @@ public class List {
     return false;
   }
 
-  public Object delete(int index) {
+  public E delete(int index) {
 
     if(index < 0 || index >= size) {
       return null;
     }
 
-    Object deleted = null;
-    Node cursor = first;
+    E deleted = null;
+    Node<E> cursor = first;
     int count = 0;
     while(cursor != null) {
       if(index == count++) {
@@ -114,12 +135,16 @@ public class List {
     return deleted;
   }
 
-  public int indexOf(Object obj) {
-    Object[] list = this.toArray();
-    for(int i = 0; i < list.length; i++) {
-      if(list[i].equals(obj)) {
-        return i;
+  public int indexOf(E obj) {
+    int index = 0;
+    Node<E> cursor = first;
+
+    while(cursor != null) {
+      if(cursor.obj == obj) {
+        return index;
       }
+      cursor = cursor.next;
+      index++;
     }
     return -1;
   }
@@ -128,13 +153,31 @@ public class List {
     return this.size;
   }
 
-  static class Node{
-    Object obj;
-    Node next;
-    Node prev;
+  static class Node<T>{
+    T obj;
+    Node<T> next;
+    Node<T> prev;
 
-    Node(Object o){
+    Node(T o){
       this.obj = o;
     }
   }
+
+  public Iterator<E> iterator() throws CloneNotSupportedException {
+    return new Iterator<E>() {
+
+      int cursor;
+
+      @Override
+      public boolean hasNext() {
+        return cursor < List.this.size();
+      }
+
+      @Override
+      public E next() {
+        return List.this.get(cursor++);
+      }
+    };
+  }
+
 }

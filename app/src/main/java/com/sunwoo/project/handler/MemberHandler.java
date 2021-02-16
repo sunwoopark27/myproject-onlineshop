@@ -2,19 +2,19 @@ package com.sunwoo.project.handler;
 
 import java.sql.Date;
 import com.sunwoo.project.domain.Member;
+import com.sunwoo.util.Iterator;
 import com.sunwoo.util.List;
-import com.sunwoo.util.ListIterator;
 import com.sunwoo.util.Prompt;
 
 public class MemberHandler {
 
-  private List memberList = new List();
+  private List<Member> memberList = new List<>();
 
-  public List getMemberList() {
+  public List<Member> getMemberList() {
     return this.memberList;
   }
 
-  public void service() {
+  public void service() throws CloneNotSupportedException {
 
     loop:
       while(true) {
@@ -79,13 +79,13 @@ public class MemberHandler {
 
   }
 
-  public void list() {
+  public void list() throws CloneNotSupportedException {
     System.out.println("[회원 목록]");
 
-    ListIterator iterator = new ListIterator(this.memberList);
+    Iterator<Member> iterator = memberList.iterator();
 
     while (iterator.hasNext()) {
-      Member m = (Member)iterator.next();
+      Member m = iterator.next();
 
       System.out.printf("번호: %d 아이디: %s 이름: %s\n가입 날짜: %s\n"
           ,m.getNumber(), m.getId(), m.getName(), m.getJoinDate());
@@ -208,9 +208,8 @@ public class MemberHandler {
   }
 
   private Member findByNo(int memberNo) {
-    Object[] list = memberList.toArray();
-    for(Object obj : list) {
-      Member m = (Member)obj;
+    Member[] list = memberList.toArray(new Member[memberList.size()]);
+    for(Member m : list) {
       if(m.getNumber() == memberNo) {
         return m;
       }
@@ -219,9 +218,8 @@ public class MemberHandler {
   }
 
   private Member findById(String id) {
-    Object[] list = memberList.toArray();
-    for(Object obj : list) {
-      Member m = (Member)obj;
+    Member[] list = memberList.toArray(new Member[memberList.size()]);
+    for(Member m : list) {
       if(m.getId().equals(id)) {
         return m;
       }

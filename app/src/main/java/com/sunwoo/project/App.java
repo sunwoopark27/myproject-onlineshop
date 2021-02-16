@@ -5,12 +5,10 @@ import com.sunwoo.project.handler.MemberHandler;
 import com.sunwoo.project.handler.OrderHandler;
 import com.sunwoo.project.handler.ProductHandler;
 import com.sunwoo.project.handler.ShippingHandler;
-import com.sunwoo.util.AbstractIterator;
+import com.sunwoo.util.Iterator;
 import com.sunwoo.util.Prompt;
 import com.sunwoo.util.Queue;
-import com.sunwoo.util.QueueIterator;
 import com.sunwoo.util.Stack;
-import com.sunwoo.util.StackIterator;
 
 public class App {
 
@@ -19,8 +17,8 @@ public class App {
   static BoardHandler boardExchangeReturn = new BoardHandler();
   static BoardHandler boardReview = new BoardHandler();
 
-  static Stack commandStack = new Stack();
-  static Queue commandQueue = new Queue();
+  static Stack<String> commandStack = new Stack<>();
+  static Queue<String> commandQueue = new Queue<>();
 
   public static void main(String[] args) throws CloneNotSupportedException {
 
@@ -74,11 +72,11 @@ public class App {
             break;
 
           case "history" : 
-            printCommandHistory(new StackIterator(commandStack.clone()));
+            printCommandHistory(commandStack.iterator());
             break;
 
           case "history2" : 
-            printCommandHistory(new QueueIterator(commandQueue.clone()));
+            printCommandHistory(commandQueue.iterator());
             break;
 
           case "0" :
@@ -95,7 +93,7 @@ public class App {
       }
   }
 
-  public static void chooseBoard() {
+  public static void chooseBoard() throws CloneNotSupportedException {
     loop:
       while(true) {
         System.out.println("[메인 > 게시판]");
@@ -138,7 +136,7 @@ public class App {
       }
   }
 
-  private static void printCommandHistory(AbstractIterator iterator) {
+  private static void printCommandHistory(Iterator<String> iterator) {
 
     int count = 0;
     while(iterator.hasNext()) {

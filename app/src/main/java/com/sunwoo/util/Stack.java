@@ -1,25 +1,48 @@
 package com.sunwoo.util;
 
-public class Stack extends List implements Cloneable {
+public class Stack<E> extends List<E> implements Cloneable {
 
-  public Object push(Object item) {
+  public E push(E item) {
     this.add(item);
     return item;
   }
 
-  public Object pop() {
-    Object obj = this.delete(this.size - 1);
+  public E pop() {
+    E obj = this.delete(this.size - 1);
     return obj;
   }
 
   @Override
-  public Stack clone() throws CloneNotSupportedException {
+  public Stack<E> clone() throws CloneNotSupportedException {
 
-    Stack stack = new Stack();
+    Stack<E> stack = new Stack<>();
     for (int i = 0; i < this.size; i++ ) {
       stack.push(this.get(i));
     }
 
     return stack;
   }
+
+  @Override
+  public Iterator<E> iterator() throws CloneNotSupportedException {
+
+    Stack<E> stack = this.clone();
+
+    return new Iterator<E>() {
+
+      @Override
+      public boolean hasNext() {
+        return stack.size() > 0;
+      }
+
+      @Override
+      public E next() {
+        return stack.pop();
+      }
+
+    };
+  }
+
+
+
 }

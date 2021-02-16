@@ -2,8 +2,8 @@ package com.sunwoo.project.handler;
 
 import java.sql.Date;
 import com.sunwoo.project.domain.Order;
+import com.sunwoo.util.Iterator;
 import com.sunwoo.util.List;
-import com.sunwoo.util.ListIterator;
 import com.sunwoo.util.Prompt;
 
 public class OrderHandler {
@@ -11,9 +11,9 @@ public class OrderHandler {
   private MemberHandler memberHandler;
   private ProductHandler productHandler;
 
-  private List orderList = new List();
+  private List<Order> orderList = new List<>();
 
-  public List getOrderList(List orderList) {
+  public List<Order> getOrderList(List<Order> orderList) {
     return this.orderList;
   }
 
@@ -22,7 +22,7 @@ public class OrderHandler {
     this.productHandler = productHandler;
   }
 
-  public void service() {
+  public void service() throws CloneNotSupportedException {
 
     loop:
       while(true) {
@@ -92,12 +92,12 @@ public class OrderHandler {
     System.out.println();
   }
 
-  public void list() {
+  public void list() throws CloneNotSupportedException {
     System.out.println("[메인 > 주문 > 목록]");
 
-    ListIterator iterator = new ListIterator(this.orderList);
+    Iterator<Order> iterator = orderList.iterator();
     while (iterator.hasNext()) {
-      Order o = (Order)iterator.next();
+      Order o = iterator.next();
       System.out.printf("주문 번호: %d 회원 아이디: %s\n주문 날짜: %s\n"
           , o.getNumber(), o.getMemberId(), o.getRegisteredDate());
       System.out.println("----------------------------------------------------------");
@@ -162,8 +162,8 @@ public class OrderHandler {
     System.out.println("[메인 > 주문 > 삭제]");
 
     int no = Prompt.inputInt("번호? ");
-    int index = indexOf(no);
-    if(index == -1) {
+    Order order = findByNo(no);
+    if(order == null) {
       System.out.println("해당 번호의 주문이 없습니다.");
       System.out.println();
 
@@ -171,7 +171,7 @@ public class OrderHandler {
       String userChoice = Prompt.inputString("정말 삭제하시겠습니까?(y/N) ");
 
       if(userChoice.equalsIgnoreCase("y")) {
-        orderList.delete(index);
+        orderList.delete(order);
         System.out.println("주문 삭제를 완료하였습니다.");
         System.out.println();
       }else {
@@ -196,21 +196,9 @@ public class OrderHandler {
     }
   }
 
-  private int indexOf(int orderNo) {
-    Object[] list = orderList.toArray();
-    for(int i = 0; i < list.length; i++) {
-      Order o = (Order)list[i];
-      if(o.getNumber() == orderNo) {
-        return i;
-      }
-    }
-    return -1;
-  }
-
   private Order findByNo(int orderNo) {
-    Object[] list = orderList.toArray();
-    for(Object obj : list) {
-      Order o = (Order)obj;
+    Order[] list = orderList.toArray(new Order[orderList.size()]);
+    for(Order o : list) {
       if(o.getNumber() == orderNo) {
         return o;
       }
