@@ -1,22 +1,19 @@
 package com.sunwoo.project.handler;
 
 import java.sql.Date;
+import java.util.Iterator;
+import java.util.LinkedList;
 import com.sunwoo.project.domain.Member;
-import com.sunwoo.util.Iterator;
-import com.sunwoo.util.List;
 import com.sunwoo.util.Prompt;
 
 public class MemberHandler {
 
-  private List<Member> memberList = new List<>();
-
-  public List<Member> getMemberList() {
-    return this.memberList;
-  }
+  private LinkedList<Member> memberList = new LinkedList<>();
 
   public void service() throws CloneNotSupportedException {
 
     loop:
+
       while(true) {
         System.out.println("[메인 > 회원]");
         System.out.println("1. 등록");
@@ -29,31 +26,36 @@ public class MemberHandler {
 
         String command = com.sunwoo.util.Prompt.inputString("명령> ");
         System.out.println();
+        try {
+          switch(command) {
+            case "1" :
+              this.add();
+              break;
+            case "2" :
+              this.list();
+              break;
+            case "3" :
+              this.detail();
+              break;
+            case "4" :
+              this.update();
+              break;
+            case "5" :
+              this.delete();
+              break;
+            case "0" :
+              System.out.println("메인으로 돌아갑니다.");
+              System.out.println();
+              break loop;
+            default :
+              System.out.println("잘못된 메뉴 번호 입니다.");
+              System.out.println();
 
-        switch(command) {
-          case "1" :
-            this.add();
-            break;
-          case "2" :
-            this.list();
-            break;
-          case "3" :
-            this.detail();
-            break;
-          case "4" :
-            this.update();
-            break;
-          case "5" :
-            this.delete();
-            break;
-          case "0" :
-            System.out.println("메인으로 돌아갑니다.");
-            System.out.println();
-            break loop;
-          default :
-            System.out.println("잘못된 메뉴 번호 입니다.");
-            System.out.println();
-
+          }
+        }catch(Exception e) {
+          System.out.println("-----------------------------------------------------------------------------");
+          System.out.printf("명령어 실행 중 오류 발생: %s - %s\n",e.getClass().getName(), e.getMessage());
+          System.out.println("-----------------------------------------------------------------------------");
         }
         System.out.println();
       }
@@ -169,7 +171,7 @@ public class MemberHandler {
 
       if(userChoice.equalsIgnoreCase("y")) {
 
-        memberList.delete(member);
+        memberList.remove(member);
 
         System.out.println("회원 정보 삭제를 완료하였습니다.");
         System.out.println();

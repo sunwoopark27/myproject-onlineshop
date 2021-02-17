@@ -1,9 +1,9 @@
 package com.sunwoo.project.handler;
 
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.Iterator;
 import com.sunwoo.project.domain.Order;
-import com.sunwoo.util.Iterator;
-import com.sunwoo.util.List;
 import com.sunwoo.util.Prompt;
 
 public class OrderHandler {
@@ -11,11 +11,7 @@ public class OrderHandler {
   private MemberHandler memberHandler;
   private ProductHandler productHandler;
 
-  private List<Order> orderList = new List<>();
-
-  public List<Order> getOrderList(List<Order> orderList) {
-    return this.orderList;
-  }
+  private ArrayList<Order> orderList = new ArrayList<>();
 
   public OrderHandler(MemberHandler memberHandler, ProductHandler productHandler){
     this.memberHandler = memberHandler;
@@ -37,31 +33,36 @@ public class OrderHandler {
 
         String command = com.sunwoo.util.Prompt.inputString("명령> ");
         System.out.println();
+        try {
+          switch(command) {
+            case "1" :
+              this.add();
+              break;
+            case "2" :
+              this.list();
+              break;
+            case "3" :
+              this.detail();
+              break;
+            case "4" :
+              this.update();
+              break;
+            case "5" :
+              this.delete();
+              break;
+            case "0" :
+              System.out.println("메인으로 돌아갑니다.");
+              System.out.println();
+              break loop;
+            default :
+              System.out.println("잘못된 메뉴 번호 입니다.");
+              System.out.println();
 
-        switch(command) {
-          case "1" :
-            this.add();
-            break;
-          case "2" :
-            this.list();
-            break;
-          case "3" :
-            this.detail();
-            break;
-          case "4" :
-            this.update();
-            break;
-          case "5" :
-            this.delete();
-            break;
-          case "0" :
-            System.out.println("메인으로 돌아갑니다.");
-            System.out.println();
-            break loop;
-          default :
-            System.out.println("잘못된 메뉴 번호 입니다.");
-            System.out.println();
-
+          }
+        }catch(Exception e){
+          System.out.println("------------------------------------------------------------------------------");
+          System.out.printf("명령어 실행 중 오류 발생: %s - %s\n", e.getClass().getName(), e.getMessage());
+          System.out.println("------------------------------------------------------------------------------");
         }
         System.out.println();
       }
@@ -171,11 +172,11 @@ public class OrderHandler {
       String userChoice = Prompt.inputString("정말 삭제하시겠습니까?(y/N) ");
 
       if(userChoice.equalsIgnoreCase("y")) {
-        orderList.delete(order);
+        orderList.remove(order);
         System.out.println("주문 삭제를 완료하였습니다.");
         System.out.println();
       }else {
-        orderList.delete(no);
+        orderList.remove(no);
         System.out.println("주문 삭제를 취소하였습니다.");
         System.out.println();
         return;

@@ -1,19 +1,15 @@
 package com.sunwoo.project.handler;
 
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.Iterator;
 import com.sunwoo.project.App;
 import com.sunwoo.project.domain.Board;
-import com.sunwoo.util.Iterator;
-import com.sunwoo.util.List;
 import com.sunwoo.util.Prompt;
 
 public class BoardHandler {
 
-  private List<Board> boardList = new List<>();
-
-  public List<Board> getBoardList() {
-    return this.boardList;
-  }
+  private ArrayList<Board> boardList = new ArrayList<>();
 
   public void service(String choice) throws CloneNotSupportedException {
 
@@ -29,31 +25,36 @@ public class BoardHandler {
 
       String command = com.sunwoo.util.Prompt.inputString("명령> ");
       System.out.println();
+      try {
+        switch(command) {
+          case "1" :
+            this.add();
+            break;
+          case "2" :
+            this.list();
+            break;
+          case "3" :
+            this.detail();
+            break;
+          case "4" :
+            this.update();
+            break;
+          case "5" :
+            this.delete();
+            break;
+          case "0" :
+            System.out.println("게시판으로 돌아갑니다.");
+            System.out.println();
+            App.chooseBoard();
+          default :
+            System.out.println("잘못된 메뉴 번호 입니다.");
+            System.out.println();
 
-      switch(command) {
-        case "1" :
-          this.add();
-          break;
-        case "2" :
-          this.list();
-          break;
-        case "3" :
-          this.detail();
-          break;
-        case "4" :
-          this.update();
-          break;
-        case "5" :
-          this.delete();
-          break;
-        case "0" :
-          System.out.println("게시판으로 돌아갑니다.");
-          System.out.println();
-          App.chooseBoard();
-        default :
-          System.out.println("잘못된 메뉴 번호 입니다.");
-          System.out.println();
-
+        }
+      }catch(Exception e) {
+        System.out.println("------------------------------------------------------------------------------");
+        System.out.printf("명령어 실행 중 오류 발생: %s - %s\n", e.getClass().getName(), e.getMessage());
+        System.out.println("------------------------------------------------------------------------------");
       }
       System.out.println();
     }
@@ -154,7 +155,7 @@ public class BoardHandler {
 
       if(userChoice.equalsIgnoreCase("y")) {
 
-        boardList.delete(board);
+        boardList.remove(board);
 
         System.out.println("게시글을 삭제하였습니다.");
         System.out.println();

@@ -1,8 +1,8 @@
 package com.sunwoo.project.handler;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import com.sunwoo.project.domain.Shipping;
-import com.sunwoo.util.Iterator;
-import com.sunwoo.util.List;
 import com.sunwoo.util.Prompt;
 
 public class ShippingHandler {
@@ -10,7 +10,7 @@ public class ShippingHandler {
   private MemberHandler memberHandler;
   private OrderHandler orderHandler;
 
-  public List<Shipping> shippingList = new List<>();
+  public ArrayList<Shipping> shippingList = new ArrayList<>();
 
   public ShippingHandler(MemberHandler memberHandler, OrderHandler orderHandler) {
     this.memberHandler = memberHandler;
@@ -32,31 +32,36 @@ public class ShippingHandler {
 
         String command = com.sunwoo.util.Prompt.inputString("명령> ");
         System.out.println();
+        try {
+          switch(command) {
+            case "1" :
+              this.add();
+              break;
+            case "2" :
+              this.list();
+              break;
+            case "3" :
+              this.detail();
+              break;
+            case "4" :
+              this.update();
+              break;
+            case "5" :
+              this.delete();
+              break;
+            case "0" :
+              System.out.println("메인으로 돌아갑니다.");
+              System.out.println();
+              break loop;
+            default :
+              System.out.println("잘못된 메뉴 번호 입니다.");
+              System.out.println();
 
-        switch(command) {
-          case "1" :
-            this.add();
-            break;
-          case "2" :
-            this.list();
-            break;
-          case "3" :
-            this.detail();
-            break;
-          case "4" :
-            this.update();
-            break;
-          case "5" :
-            this.delete();
-            break;
-          case "0" :
-            System.out.println("메인으로 돌아갑니다.");
-            System.out.println();
-            break loop;
-          default :
-            System.out.println("잘못된 메뉴 번호 입니다.");
-            System.out.println();
-
+          }
+        }catch(Exception e) {
+          System.out.println("------------------------------------------------------------------------------");
+          System.out.printf("명령어 실행 중 오류 발생: %s - %s\n", e.getClass().getName(), e.getMessage());
+          System.out.println("------------------------------------------------------------------------------");
         }
         System.out.println();
       }
@@ -195,7 +200,7 @@ public class ShippingHandler {
 
       if(userChoice.equalsIgnoreCase("y")) {
 
-        shippingList.delete(shipping);
+        shippingList.remove(shipping);
         System.out.println("배송 삭제가 완료되었습니다.");
         System.out.println();
         return;

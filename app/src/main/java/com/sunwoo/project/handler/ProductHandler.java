@@ -1,15 +1,15 @@
 package com.sunwoo.project.handler;
 
+import java.util.Iterator;
+import java.util.LinkedList;
 import com.sunwoo.project.domain.Product;
-import com.sunwoo.util.Iterator;
-import com.sunwoo.util.List;
 import com.sunwoo.util.Prompt;
 
 public class ProductHandler {
 
-  private List<Product> productList = new List<Product>();
+  private LinkedList<Product> productList = new LinkedList<Product>();
 
-  public List<Product> getProductList(List<Product> productList) {
+  public LinkedList<Product> getProductList(LinkedList<Product> productList) {
     return this.productList;
   }
 
@@ -28,31 +28,36 @@ public class ProductHandler {
 
         String command = com.sunwoo.util.Prompt.inputString("명령> ");
         System.out.println();
+        try {
+          switch(command) {
+            case "1" :
+              this.add();
+              break;
+            case "2" :
+              this.list();
+              break;
+            case "3" :
+              this.detail();
+              break;
+            case "4" :
+              this.update();
+              break;
+            case "5" :
+              this.delete();
+              break;
+            case "0" :
+              System.out.println("메인으로 돌아갑니다.");
+              System.out.println();
+              break loop;
+            default :
+              System.out.println("잘못된 메뉴 번호 입니다.");
+              System.out.println();
 
-        switch(command) {
-          case "1" :
-            this.add();
-            break;
-          case "2" :
-            this.list();
-            break;
-          case "3" :
-            this.detail();
-            break;
-          case "4" :
-            this.update();
-            break;
-          case "5" :
-            this.delete();
-            break;
-          case "0" :
-            System.out.println("메인으로 돌아갑니다.");
-            System.out.println();
-            break loop;
-          default :
-            System.out.println("잘못된 메뉴 번호 입니다.");
-            System.out.println();
-
+          }
+        }catch(Exception e) {
+          System.out.println("------------------------------------------------------------------------------");
+          System.out.printf("명령어 실행 중 오류 발생: %s - %s\n", e.getClass().getName(), e.getMessage());
+          System.out.println("------------------------------------------------------------------------------");
         }
         System.out.println();
       }
@@ -147,7 +152,7 @@ public class ProductHandler {
       String userChoice = Prompt.inputString("정말 삭제하시겠습니까?(y/N) ");
 
       if(userChoice.equalsIgnoreCase("y")) {
-        productList.delete(product);
+        productList.remove(product);
 
         System.out.println("상품 삭제가 완료되었습니다.");
         System.out.println();

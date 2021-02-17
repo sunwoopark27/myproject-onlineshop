@@ -1,14 +1,14 @@
 package com.sunwoo.project;
 
+import java.util.ArrayDeque;
+import java.util.Iterator;
+import java.util.LinkedList;
 import com.sunwoo.project.handler.BoardHandler;
 import com.sunwoo.project.handler.MemberHandler;
 import com.sunwoo.project.handler.OrderHandler;
 import com.sunwoo.project.handler.ProductHandler;
 import com.sunwoo.project.handler.ShippingHandler;
-import com.sunwoo.util.Iterator;
 import com.sunwoo.util.Prompt;
-import com.sunwoo.util.Queue;
-import com.sunwoo.util.Stack;
 
 public class App {
 
@@ -17,8 +17,8 @@ public class App {
   static BoardHandler boardExchangeReturn = new BoardHandler();
   static BoardHandler boardReview = new BoardHandler();
 
-  static Stack<String> commandStack = new Stack<>();
-  static Queue<String> commandQueue = new Queue<>();
+  static ArrayDeque<String> commandStack = new ArrayDeque<>();
+  static LinkedList<String> commandQueue = new LinkedList<>();
 
   public static void main(String[] args) throws CloneNotSupportedException {
 
@@ -73,10 +73,12 @@ public class App {
 
           case "history" : 
             printCommandHistory(commandStack.iterator());
+            System.out.println();
             break;
 
           case "history2" : 
             printCommandHistory(commandQueue.iterator());
+            System.out.println();
             break;
 
           case "0" :
@@ -90,6 +92,7 @@ public class App {
             System.out.println();
 
         }
+
       }
   }
 
