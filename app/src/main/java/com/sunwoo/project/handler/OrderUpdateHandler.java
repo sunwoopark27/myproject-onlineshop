@@ -6,14 +6,14 @@ import java.util.Iterator;
 import com.sunwoo.project.domain.Order;
 import com.sunwoo.util.Prompt;
 
-public class OrderHandler {
+public class OrderUpdateHandler {
 
-  private MemberHandler memberHandler;
+  private AbstractMemberHandler memberHandler;
   private ProductHandler productHandler;
 
   private ArrayList<Order> orderList = new ArrayList<>();
 
-  public OrderHandler(MemberHandler memberHandler, ProductHandler productHandler){
+  public OrderUpdateHandler(AbstractMemberHandler memberHandler, ProductHandler productHandler){
     this.memberHandler = memberHandler;
     this.productHandler = productHandler;
   }

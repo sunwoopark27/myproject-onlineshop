@@ -7,12 +7,12 @@ import com.sunwoo.util.Prompt;
 
 public class ShippingHandler {
 
-  private MemberHandler memberHandler;
-  private OrderHandler orderHandler;
+  private AbstractMemberHandler memberHandler;
+  private AbstractOrderHandler orderHandler;
 
   public ArrayList<Shipping> shippingList = new ArrayList<>();
 
-  public ShippingHandler(MemberHandler memberHandler, OrderHandler orderHandler) {
+  public ShippingHandler(AbstractMemberHandler memberHandler, AbstractOrderHandler orderHandler) {
     this.memberHandler = memberHandler;
     this.orderHandler = orderHandler;
   }

@@ -3,34 +3,35 @@ package com.sunwoo.project;
 import java.util.ArrayDeque;
 import java.util.Iterator;
 import java.util.LinkedList;
-import com.sunwoo.project.handler.BoardHandler;
-import com.sunwoo.project.handler.MemberHandler;
-import com.sunwoo.project.handler.OrderHandler;
+import com.sunwoo.project.handler.BoardServiceExchangeReturn;
+import com.sunwoo.project.handler.BoardServiceProduct;
+import com.sunwoo.project.handler.BoardServiceReview;
+import com.sunwoo.project.handler.BoardServiceShipping;
+import com.sunwoo.project.handler.MemberService;
+import com.sunwoo.project.handler.AbstractOrderHandler;
 import com.sunwoo.project.handler.ProductHandler;
 import com.sunwoo.project.handler.ShippingHandler;
 import com.sunwoo.util.Prompt;
 
 public class App {
 
-  static BoardHandler boardProduct = new BoardHandler();
-  static BoardHandler boardShipping = new BoardHandler();
-  static BoardHandler boardExchangeReturn = new BoardHandler();
-  static BoardHandler boardReview = new BoardHandler();
+  static BoardServiceProduct boardServiceProduct = new BoardServiceProduct();
+  static BoardServiceReview boardServiceReview = new BoardServiceReview();
+  static BoardServiceShipping boardServiceShipping = new BoardServiceShipping();
+  static BoardServiceExchangeReturn boardServiceExchangeReturn = new BoardServiceExchangeReturn();
 
   static ArrayDeque<String> commandStack = new ArrayDeque<>();
   static LinkedList<String> commandQueue = new LinkedList<>();
 
   public static void main(String[] args) throws CloneNotSupportedException {
 
-
-    MemberHandler memberHandler = new MemberHandler();
+    MemberService memberService = new MemberService();
 
     ProductHandler productHandler = new ProductHandler();
 
-    OrderHandler orderHandler = new OrderHandler(memberHandler, productHandler);
+    AbstractOrderHandler orderHandler = new AbstractOrderHandler(memberHandler, productHandler);
 
     ShippingHandler shippingHandler = new ShippingHandler(memberHandler, orderHandler);
-
 
     loop: 
       while(true) {
@@ -52,7 +53,7 @@ public class App {
         switch(command) {
 
           case "1" :
-            memberHandler.service();
+            memberService.menu();
             break;
 
           case "2" :
@@ -112,19 +113,19 @@ public class App {
 
         switch(command) {
           case "1" :
-            boardProduct.service("상품 문의");
+            boardServiceProduct.menu("상품 문의");
             break;
 
           case "2" :
-            boardShipping.service("배송 문의");
+            boardServiceShipping.menu("배송 문의");
             break;
 
           case "3" :
-            boardExchangeReturn.service("교환/반품 문의");
+            boardServiceExchangeReturn.menu("교환/반품 문의");
             break;
 
           case "4" :
-            boardReview.service("리뷰");
+            boardServiceReview.menu("리뷰");
             break;
 
           case "0" :
