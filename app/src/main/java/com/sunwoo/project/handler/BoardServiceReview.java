@@ -6,7 +6,7 @@ import com.sunwoo.project.domain.Board;
 
 public class BoardServiceReview {
 
-  static ArrayList<Board> boardReviewList = new ArrayList<>();
+  ArrayList<Board> boardReviewList = new ArrayList<>();
 
   BoardAddHandler boardAddHandler = new BoardAddHandler(boardReviewList);
   BoardListHandler boardListHandler = new BoardListHandler(boardReviewList);

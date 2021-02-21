@@ -8,9 +8,12 @@ import com.sunwoo.project.handler.BoardServiceProduct;
 import com.sunwoo.project.handler.BoardServiceReview;
 import com.sunwoo.project.handler.BoardServiceShipping;
 import com.sunwoo.project.handler.MemberService;
-import com.sunwoo.project.handler.AbstractOrderHandler;
-import com.sunwoo.project.handler.ProductHandler;
-import com.sunwoo.project.handler.ShippingHandler;
+import com.sunwoo.project.handler.MemberValidatorHandler;
+import com.sunwoo.project.handler.OrderService;
+import com.sunwoo.project.handler.OrderValidatorHandler;
+import com.sunwoo.project.handler.ProductService;
+import com.sunwoo.project.handler.ProductValidatorHandler;
+import com.sunwoo.project.handler.ShippingService;
 import com.sunwoo.util.Prompt;
 
 public class App {
@@ -26,12 +29,15 @@ public class App {
   public static void main(String[] args) throws CloneNotSupportedException {
 
     MemberService memberService = new MemberService();
+    MemberValidatorHandler memberValidatorHandler = new MemberValidatorHandler(memberService.getMemberList());
 
-    ProductHandler productHandler = new ProductHandler();
+    ProductService productService = new ProductService();
+    ProductValidatorHandler productValidatorHandler = new ProductValidatorHandler(productService.getProductList());
 
-    AbstractOrderHandler orderHandler = new AbstractOrderHandler(memberHandler, productHandler);
+    OrderService orderService = new OrderService(memberValidatorHandler, productValidatorHandler);
+    OrderValidatorHandler orderValidatorHandler = new OrderValidatorHandler(orderService.getOrderList());
 
-    ShippingHandler shippingHandler = new ShippingHandler(memberHandler, orderHandler);
+    ShippingService shippingService = new ShippingService(memberValidatorHandler, orderValidatorHandler);
 
     loop: 
       while(true) {
@@ -57,15 +63,15 @@ public class App {
             break;
 
           case "2" :
-            productHandler.service();
+            productService.menu();
             break;
 
           case "3" :
-            orderHandler.service();
+            orderService.menu();
             break;
 
           case "4" :
-            shippingHandler.service();
+            shippingService.menu();
             break;
 
           case "5" :

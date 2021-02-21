@@ -6,7 +6,7 @@ import com.sunwoo.project.domain.Board;
 
 public class BoardServiceExchangeReturn {
 
-  static ArrayList<Board> boardExchangeReturnList = new ArrayList<>();
+  ArrayList<Board> boardExchangeReturnList = new ArrayList<>();
 
   BoardAddHandler boardAddHandler = new BoardAddHandler(boardExchangeReturnList);
   BoardListHandler boardListHandler = new BoardListHandler(boardExchangeReturnList);

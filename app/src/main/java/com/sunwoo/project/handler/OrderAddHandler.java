@@ -7,13 +7,13 @@ import com.sunwoo.util.Prompt;
 
 public class OrderAddHandler extends AbstractOrderHandler {
 
-  private AbstractMemberHandler memberHandler;
-  private ProductHandler productHandler;
+  private MemberValidatorHandler memberValidatorHandler;
+  private ProductValidatorHandler productValidatorHandler;
 
-  public OrderAddHandler(List<Order> orderList, AbstractMemberHandler memberHandler, ProductHandler productHandler){
+  public OrderAddHandler(MemberValidatorHandler memberValidatorHandler, ProductValidatorHandler productValidatorHandler, List<Order> orderList){
     super(orderList);
-    this.memberHandler = memberHandler;
-    this.productHandler = productHandler;
+    this.memberValidatorHandler = memberValidatorHandler;
+    this.productValidatorHandler = productValidatorHandler;
   }
 
   @Override
@@ -25,14 +25,14 @@ public class OrderAddHandler extends AbstractOrderHandler {
 
     o.setNumber(Prompt.inputInt("주문 번호: "));
 
-    o.setMemberId(memberHandler.inputMemberId()); 
+    o.setMemberId(memberValidatorHandler.inputMemberId()); 
     if(o.getMemberId() == null) {
       System.out.println("주문 등록을 취소합니다.");
       System.out.println();
       return;
     }
 
-    o.setProducts(productHandler.inputProducts("상품명(enter(완료)): "));
+    o.setProducts(productValidatorHandler.inputProducts("상품명(enter(완료)): "));
 
     o.setRequest(Prompt.inputString("요청사항: "));
     o.setRegisteredDate(new Date(System.currentTimeMillis()));

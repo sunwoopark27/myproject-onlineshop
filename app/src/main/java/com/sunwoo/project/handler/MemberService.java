@@ -7,7 +7,6 @@ import com.sunwoo.util.Prompt;
 public class MemberService {
 
   private LinkedList<Member> memberList = new LinkedList<>();
-
   public LinkedList<Member> getMemberList() {
     return memberList;
   }
@@ -17,6 +16,11 @@ public class MemberService {
   MemberDetailHandler memberDetailHandler = new MemberDetailHandler(memberList);
   MemberUpdateHandler memberUpdateHandler = new MemberUpdateHandler(memberList);
   MemberDeleteHandler memberDeleteHandler = new MemberDeleteHandler(memberList);
+
+  //  MemberValidatorHandler memberValidatorHandler = new MemberValidatorHandler(memberList);
+  //  public MemberValidatorHandler getMemberValidatorHandler() {
+  //    return memberValidatorHandler;
+  //  }
 
   public void menu() {
 
@@ -94,7 +98,7 @@ public class MemberService {
     }
   }
 
-  private Member findByNo(int memberNo) {
+  protected Member findByNo(int memberNo) {
     Member[] list = memberList.toArray(new Member[memberList.size()]);
     for(Member m : list) {
       if(m.getNumber() == memberNo) {
