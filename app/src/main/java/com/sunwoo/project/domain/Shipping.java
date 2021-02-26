@@ -1,6 +1,10 @@
 package com.sunwoo.project.domain;
 
-public class Shipping {
+import java.io.Serializable;
+
+public class Shipping implements Serializable {
+
+  private static final long serialVersionUID = 1L;
   private int number;//
   private String memberId;//
   private int orderNumber;//

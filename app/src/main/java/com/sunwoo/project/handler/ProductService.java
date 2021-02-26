@@ -1,5 +1,6 @@
 package com.sunwoo.project.handler;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import com.sunwoo.project.domain.Product;
 import com.sunwoo.util.Prompt;
@@ -12,13 +13,15 @@ public class ProductService {
     return productList;
   }
 
-  ProductAddHandler productAddHandler = new ProductAddHandler(productList);
-  ProductListHandler productListHandler = new ProductListHandler(productList);
-  ProductDetailHandler productDetailHandler = new ProductDetailHandler(productList);
-  ProductUpdateHandler productUpdateHandler = new ProductUpdateHandler(productList);
-  ProductDeleteHandler productDeleteHandler = new ProductDeleteHandler(productList);
-
   public void menu() {
+
+    HashMap<String,Command> commandMap = new HashMap<>();
+
+    commandMap.put("1", new ProductAddHandler(productList));
+    commandMap.put("2", new ProductListHandler(productList));
+    commandMap.put("3", new ProductDetailHandler(productList));
+    commandMap.put("4", new ProductUpdateHandler(productList));
+    commandMap.put("5", new ProductDeleteHandler(productList));
 
     loop:
       while(true) {
@@ -35,28 +38,17 @@ public class ProductService {
         System.out.println();
         try {
           switch(command) {
-            case "1" :
-              productAddHandler.service();
-              break;
-            case "2" :
-              productListHandler.service();
-              break;
-            case "3" :
-              productDetailHandler.service();
-              break;
-            case "4" :
-              productUpdateHandler.service();
-              break;
-            case "5" :
-              productDeleteHandler.service();
-              break;
             case "0" :
               System.out.println("메인으로 돌아갑니다.");
               System.out.println();
               break loop;
             default :
-              System.out.println("잘못된 메뉴 번호 입니다.");
-              System.out.println();
+              Command commandHandler = commandMap.get(command);
+              if(commandHandler == null) {
+                System.out.println("실행할 수 없는 메뉴 번호 입니다.");
+              }else {
+                commandHandler.service();
+              }
 
           }
         }catch(Exception e) {

@@ -1,6 +1,7 @@
 package com.sunwoo.project.handler;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import com.sunwoo.project.domain.Order;
 
 public  class OrderService {
@@ -17,16 +18,16 @@ public  class OrderService {
     this.productValidatorHandler = productValidatorHandler;
   }
 
-  //멤버 리스트 가져와야돼!
-  // 앱 클래스에서 서비스 이요앻 볼까? 거기에 리스트 있잖아. 
-
-  OrderAddHandler orderAddHandler = new OrderAddHandler(memberValidatorHandler, productValidatorHandler, orderList);
-  OrderListHandler orderListHandler = new OrderListHandler(orderList);
-  OrderDetailHandler orderDetailHandler = new OrderDetailHandler(orderList);
-  OrderUpdateHandler orderUpdateHandler = new OrderUpdateHandler(memberValidatorHandler, productValidatorHandler, orderList);
-  OrderDeleteHandler orderDeleteHandler = new OrderDeleteHandler(orderList);
-
   public void menu() {
+
+    HashMap<String,Command> commandMap = new HashMap<>();
+
+    commandMap.put("1", new OrderAddHandler(memberValidatorHandler, productValidatorHandler, orderList));
+    commandMap.put("2", new OrderListHandler(orderList));
+    commandMap.put("3", new OrderDetailHandler(orderList));
+    commandMap.put("4", new OrderUpdateHandler(memberValidatorHandler, productValidatorHandler, orderList));
+    commandMap.put("5", new OrderDeleteHandler(orderList));
+
 
     loop:
       while(true) {
@@ -43,29 +44,17 @@ public  class OrderService {
         System.out.println();
         try {
           switch(command) {
-            case "1" :
-              orderAddHandler.service();
-              break;
-            case "2" :
-              orderListHandler.service();
-              break;
-            case "3" :
-              orderDetailHandler.service();
-              break;
-            case "4" :
-              orderUpdateHandler.service();
-              break;
-            case "5" :
-              orderDeleteHandler.service();
-              break;
             case "0" :
               System.out.println("메인으로 돌아갑니다.");
               System.out.println();
               break loop;
             default :
-              System.out.println("잘못된 메뉴 번호 입니다.");
-              System.out.println();
-
+              Command commandHandler = commandMap.get(command);
+              if(commandHandler == null) {
+                System.out.println("실행할 수 없는 메뉴 번호 입니다.");
+              }else {
+                commandHandler.service();
+              }
           }
         }catch(Exception e){
           System.out.println("------------------------------------------------------------------------------");

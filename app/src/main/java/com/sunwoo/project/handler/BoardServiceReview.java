@@ -1,6 +1,7 @@
 package com.sunwoo.project.handler;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import com.sunwoo.project.App;
 import com.sunwoo.project.domain.Board;
 
@@ -8,13 +9,15 @@ public class BoardServiceReview {
 
   ArrayList<Board> boardReviewList = new ArrayList<>();
 
-  BoardAddHandler boardAddHandler = new BoardAddHandler(boardReviewList);
-  BoardListHandler boardListHandler = new BoardListHandler(boardReviewList);
-  BoardDetailHandler boardDetailHandler = new BoardDetailHandler(boardReviewList);
-  BoardUpdateHandler boardUpdateHandler = new BoardUpdateHandler(boardReviewList);
-  BoardDeleteHandler boardDeleteHandler = new BoardDeleteHandler(boardReviewList);
-
   public void menu(String choice) throws CloneNotSupportedException {
+
+    HashMap<String,Command> commandMap = new HashMap<>();
+
+    commandMap.put("1", new BoardAddHandler(boardReviewList));
+    commandMap.put("2", new BoardListHandler(boardReviewList));
+    commandMap.put("3", new BoardDetailHandler(boardReviewList));
+    commandMap.put("4", new BoardUpdateHandler(boardReviewList));
+    commandMap.put("5", new BoardDeleteHandler(boardReviewList));
 
     while(true) {
       System.out.printf("[메인 > 게시판 > %s]\n", choice);
@@ -30,29 +33,17 @@ public class BoardServiceReview {
       System.out.println();
       try {
         switch(command) {
-          case "1" :
-            boardAddHandler.service();
-            break;
-          case "2" :
-            boardListHandler.service();
-            break;
-          case "3" :
-            boardDetailHandler.service();
-            break;
-          case "4" :
-            boardUpdateHandler.service();
-            break;
-          case "5" :
-            boardDeleteHandler.service();
-            break;
           case "0" :
             System.out.println("게시판으로 돌아갑니다.");
             System.out.println();
             App.chooseBoard();
           default :
-            System.out.println("잘못된 메뉴 번호 입니다.");
-            System.out.println();
-
+            Command commandHandler = commandMap.get(command);
+            if(commandHandler == null) {
+              System.out.println("실행할 수 없는 메뉴 번호 입니다.");
+            } else {
+              commandHandler.service();
+            }
         }
       }catch(Exception e) {
         System.out.println("------------------------------------------------------------------------------");

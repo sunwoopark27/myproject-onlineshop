@@ -1,6 +1,7 @@
 package com.sunwoo.project.handler;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import com.sunwoo.project.domain.Shipping;
 
 public class ShippingService {
@@ -14,14 +15,15 @@ public class ShippingService {
     this.orderValidatorHandler = orderValidatorHandler;
   }
 
-  ShippingAddHandler shippingAddHandler = new ShippingAddHandler(memberValidatorHandler, orderValidatorHandler, shippingList);
-  ShippingListHandler shippingListHandler = new ShippingListHandler(shippingList);
-  ShippingDetailHandler shippingDetailHandler = new ShippingDetailHandler(shippingList);
-  ShippingUpdateHandler shippingUpdateHandler = new ShippingUpdateHandler(memberValidatorHandler, orderValidatorHandler, shippingList);
-  ShippingDeleteHandler shippingDeleteHandler = new ShippingDeleteHandler(shippingList);
-
-
   public void menu() throws CloneNotSupportedException {
+
+    HashMap<String,Command> commandMap = new HashMap<>();
+
+    commandMap.put("1", new ShippingAddHandler(memberValidatorHandler, orderValidatorHandler, shippingList));
+    commandMap.put("2", new ShippingListHandler(shippingList));
+    commandMap.put("3", new ShippingDetailHandler(shippingList));
+    commandMap.put("4", new ShippingUpdateHandler(memberValidatorHandler, orderValidatorHandler, shippingList));
+    commandMap.put("5", new ShippingDeleteHandler(shippingList));
 
     loop:
       while(true) {
@@ -38,29 +40,17 @@ public class ShippingService {
         System.out.println();
         try {
           switch(command) {
-            case "1" :
-              shippingAddHandler.service();
-              break;
-            case "2" :
-              shippingListHandler.service();
-              break;
-            case "3" :
-              shippingDetailHandler.service();
-              break;
-            case "4" :
-              shippingUpdateHandler.service();
-              break;
-            case "5" :
-              shippingDeleteHandler.service();
-              break;
             case "0" :
               System.out.println("메인으로 돌아갑니다.");
               System.out.println();
               break loop;
             default :
-              System.out.println("잘못된 메뉴 번호 입니다.");
-              System.out.println();
-
+              Command commandHandler = commandMap.get(command);
+              if(commandHandler == null) {
+                System.out.println("실행할 수 없는 메뉴 번호 입니다.");
+              }else {
+                commandHandler.service();
+              }
           }
         }catch(Exception e) {
           System.out.println("------------------------------------------------------------------------------");
