@@ -1,13 +1,15 @@
 package com.sunwoo.project.handler;
 
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import com.sunwoo.project.App;
 import com.sunwoo.project.domain.Board;
 
 public class BoardServiceShipping {
 
-  static ArrayList<Board> boardShippingList = new ArrayList<>(); //상품 문의
+  static List<Board> boardShippingList = new ArrayList<>(); //상품 문의
 
   public void menu(String choice) throws CloneNotSupportedException {
 
@@ -52,6 +54,28 @@ public class BoardServiceShipping {
       }
       System.out.println();
     }
+  }
+
+  static void saveBoards() {
+    try(FileOutputStream out = new FileOutputStream("boardsOfShipping.data")) {
+      int size = boardShippingList.size();
+      out.write(size >> 8);
+      out.write(size);
+
+      for(Board b : boardShippingList) {
+
+      }
+
+
+
+
+    } catch (Exception e) {
+
+    }
+  }
+
+  static void loadBoards() {
+
   }
 
 }
