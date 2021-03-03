@@ -3,6 +3,7 @@ package com.sunwoo.project.handler;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import com.sunwoo.project.App;
@@ -10,7 +11,7 @@ import com.sunwoo.project.domain.Board;
 
 public class BoardServiceProduct {
 
-  static List<Board> boardProductList; //상품 문의
+  static List<Board> boardProductList = new ArrayList<>(); //상품 문의
 
   public void menu(String choice) {
 
@@ -54,8 +55,8 @@ public class BoardServiceProduct {
         System.out.printf("명령어 실행 중 오류 발생: %s - %s\n", e.getClass().getName(), e.getMessage());
         System.out.println("------------------------------------------------------------------------------");
       }
-      System.out.println();
       saveBoards();
+      System.out.println();
     }
   }
 
@@ -105,6 +106,7 @@ public class BoardServiceProduct {
 
     } catch (Exception e) {
       System.out.println("상품문의 데이터 파일로 저장 중 오류 발생!");
+      e.printStackTrace();
     }
   }
 
