@@ -63,7 +63,10 @@ public class BoardServiceShipping {
       out.write(size);
 
       for(Board b : boardShippingList) {
-
+        out.write(b.getNumber() >> 24);
+        out.write(b.getNumber() >> 16);
+        out.write(b.getNumber() >> 8);
+        out.write(b.getNumber());
       }
 
 
