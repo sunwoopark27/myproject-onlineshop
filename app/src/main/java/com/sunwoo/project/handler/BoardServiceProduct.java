@@ -18,11 +18,11 @@ public class BoardServiceProduct {
 
   static List<Board> boardProductList = new ArrayList<>(); //상품 문의
 
-  static File boardsOfProduct = new File("boardsOfProduct");
+  static File boardsOfProduct = new File("boardsOfProduct.data");
 
   public void menu(String choice) {
 
-    loadObjects(boardsOfProduct);
+    loadObjects(boardsOfProduct, Board.class);
     HashMap<String,Command> commandMap = new HashMap<>();
 
     commandMap.put("1", new BoardAddHandler(boardProductList));
@@ -72,17 +72,17 @@ public class BoardServiceProduct {
   }
 
   @SuppressWarnings("unchecked")
-  static void loadObjects(File file) {
+  static <T extends Serializable> void loadObjects(File file, Class<T> dataType) {
     try(ObjectInputStream in = new ObjectInputStream(
         new BufferedInputStream(
             new FileInputStream(file)))) {
 
       boardProductList = (List<Board>) in.readObject();
-      System.out.println("상품 문의 로딩!");
+      System.out.printf("파일 %s 로딩!\n", file.getName());
 
 
     } catch (Exception e) {
-      System.out.println("상품 문의 데이터 로딩 중 오류 발생!");
+      System.out.printf("파일 %s 로딩 중 오류 발생!\n", file.getName());
     }
   }
 
@@ -92,11 +92,10 @@ public class BoardServiceProduct {
             new FileOutputStream(file)))) { 
 
       out.writeObject(dataList);
-      System.out.println("상품문의가 등록되었습니다.");
+      System.out.printf("파일 %s 저장!\n", file.getName());
 
     } catch (Exception e) {
-      System.out.println("상품문의 데이터 파일로 저장 중 오류 발생!");
-      e.printStackTrace();
+      System.out.printf("파일 %s 저장 중 오류 발생!\n", file.getName());
     }
   }
 
