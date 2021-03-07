@@ -136,7 +136,8 @@ public class App {
 
           case "0" :
             System.out.println("메인으로 돌아갑니다.");
-            break loop;
+            System.out.println();
+            return;
 
           default :
             System.out.println("잘못된 메뉴 번호 입니다.");
