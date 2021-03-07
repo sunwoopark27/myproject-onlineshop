@@ -2,10 +2,12 @@ package com.sunwoo.project.handler;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,9 +18,11 @@ public class BoardServiceProduct {
 
   static List<Board> boardProductList = new ArrayList<>(); //상품 문의
 
+  static File boardsOfProduct = new File("boardsOfProduct");
+
   public void menu(String choice) {
 
-    loadBoards();
+    loadObjects(boardsOfProduct);
     HashMap<String,Command> commandMap = new HashMap<>();
 
     commandMap.put("1", new BoardAddHandler(boardProductList));
@@ -62,16 +66,16 @@ public class BoardServiceProduct {
         System.out.printf("명령어 실행 중 오류 발생: %s - %s\n", e.getClass().getName(), e.getMessage());
         System.out.println("------------------------------------------------------------------------------");
       }
-      saveBoards();
+      saveObjects(boardsOfProduct, boardProductList);
       System.out.println();
     }
   }
 
   @SuppressWarnings("unchecked")
-  static void loadBoards() {
+  static void loadObjects(File file) {
     try(ObjectInputStream in = new ObjectInputStream(
         new BufferedInputStream(
-            new FileInputStream("boardsOfProduct.data")))) {
+            new FileInputStream(file)))) {
 
       boardProductList = (List<Board>) in.readObject();
       System.out.println("상품 문의 로딩!");
@@ -82,12 +86,12 @@ public class BoardServiceProduct {
     }
   }
 
-  static void saveBoards() {
+  static <T extends Serializable>void saveObjects(File file, List<T> dataList) {
     try (ObjectOutputStream out = new ObjectOutputStream(
         new BufferedOutputStream(
-            new FileOutputStream("boardsOfProduct.data")))) { 
+            new FileOutputStream(file)))) { 
 
-      out.writeObject(boardProductList);
+      out.writeObject(dataList);
       System.out.println("상품문의가 등록되었습니다.");
 
     } catch (Exception e) {
