@@ -2,11 +2,10 @@ package com.sunwoo.project.handler;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.sql.Date;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import com.sunwoo.project.App;
 import com.sunwoo.project.domain.Board;
@@ -74,21 +73,11 @@ public class BoardServiceProduct {
 
 
   static void saveBoards() {
-    try (DataOutputStream out = new DataOutputStream(
+    try (ObjectOutputStream out = new ObjectOutputStream(
         new BufferedOutputStream
         (new FileOutputStream("boardsOfProduct.data")))) { 
 
-      out.writeInt(boardProductList.size());
-
-      for (Board b : boardProductList) { // 번호 제목 내용 글쓴이 등록일 조회수 좋아요
-        out.writeInt(b.getNumber());
-        out.writeUTF(b.getTitle());
-        out.writeUTF(b.getContent());
-        out.writeUTF(b.getWriter());
-        out.writeUTF(b.getRegisteredDate().toString());
-        out.writeInt(b.getViewCount());
-        out.writeInt(b.getLike());
-      }
+      out.writeObject(boardProductList);
       System.out.println("상품문의가 등록되었습니다.");
 
     } catch (Exception e) {
@@ -97,30 +86,19 @@ public class BoardServiceProduct {
     }
   }
 
+  @SuppressWarnings("unchecked")
   static void loadBoards() {
-    try(DataInputStream in = new DataInputStream(
+    try(ObjectInputStream in = new ObjectInputStream(
         new BufferedInputStream(
             new FileInputStream("boardsOfProduct.data")))) {
-      int size = in.readInt();
 
-      for(int i = 0; i < size ; i++) {// 번호 제목 내용 글쓴이 등록일 조회수 좋아요
-        Board b = new Board();
-
-        b.setNumber(in.readInt());
-        b.setTitle(in.readUTF());
-        b.setContent(in.readUTF());
-        b.setWriter(in.readUTF());
-        b.setRegisteredDate(Date.valueOf(in.readUTF()));
-        b.setViewCount(in.readInt());
-        b.setLike(in.readInt());
-
-        boardProductList.add(b);
-        System.out.println("상품 문의 로딩!");
-      }
+      boardProductList = (ArrayList<Board>) in.readObject();
+      System.out.println("상품 문의 로딩!");
 
     } catch (Exception e) {
       System.out.println("상품 문의 데이터 로딩 중 오류 발생!");
+      boardProductList = new ArrayList<>();
     }
   }
-
 }
+
