@@ -16,7 +16,7 @@ import com.sunwoo.project.domain.Board;
 
 public class BoardServiceProduct {
 
-  static List<Board> boardProductList = new ArrayList<>(); //상품 문의
+  static List<Board> boardProductList; //상품 문의
 
   static File boardsOfProduct = new File("boardsOfProduct.data");
 
@@ -83,6 +83,7 @@ public class BoardServiceProduct {
 
     } catch (Exception e) {
       System.out.printf("파일 %s 로딩 중 오류 발생!\n", file.getName());
+      boardProductList = new ArrayList<>();
     }
   }
 
