@@ -22,7 +22,8 @@ public class BoardServiceProduct {
 
   public void menu(String choice) {
 
-    loadObjects(boardsOfProduct, Board.class);
+    boardProductList = loadObjects(boardsOfProduct, Board.class);
+
     HashMap<String,Command> commandMap = new HashMap<>();
 
     commandMap.put("1", new BoardAddHandler(boardProductList));
@@ -72,18 +73,17 @@ public class BoardServiceProduct {
   }
 
   @SuppressWarnings("unchecked")
-  static <T extends Serializable> void loadObjects(File file, Class<T> dataType) {
+  static <T extends Serializable> List<T> loadObjects(File file, Class<T> dataType) {
     try(ObjectInputStream in = new ObjectInputStream(
         new BufferedInputStream(
             new FileInputStream(file)))) {
 
-      boardProductList = (List<Board>) in.readObject();
       System.out.printf("파일 %s 로딩!\n", file.getName());
-
+      return (List<T>) in.readObject();
 
     } catch (Exception e) {
       System.out.printf("파일 %s 로딩 중 오류 발생!\n", file.getName());
-      boardProductList = new ArrayList<>();
+      return new ArrayList<T>();
     }
   }
 
