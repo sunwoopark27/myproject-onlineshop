@@ -91,32 +91,13 @@ public class BoardServiceProduct {
       for(int i = 0; i < size ; i++) {// 번호 제목 내용 글쓴이 등록일 조회수 좋아요
         Board b = new Board();
 
-        int value = in.read() << 24 | in.read() << 16 | in.read() << 8 | in.read();
-        b.setNumber(value);
-
-        byte[] bytes = new byte[30000];
-
-        int len = in.read() << 8 | in.read();
-        in.read(bytes, 0, len);
-        b.setTitle(new String(bytes, 0, len, "UTF-8"));
-
-        len = in.read() << 8 | in.read();
-        in.read(bytes, 0, len);
-        b.setContent(new String(bytes, 0, len, "UTF-8"));
-
-        len = in.read() << 8 | in.read();
-        in.read(bytes, 0, len);
-        b.setWriter(new String(bytes, 0, len, "UTF-8"));
-
-        len = in.read() << 8 | in.read();
-        in.read(bytes, 0, len);
-        b.setRegisteredDate(Date.valueOf(new String(bytes, 0, len, "UTF-8")));
-
-        value = in.read() << 24 | in.read() << 16 | in.read() << 8 | in.read();
-        b.setViewCount(value);
-
-        value = in.read() << 24 | in.read() << 16 | in.read() << 8 | in.read();
-        b.setLike(value);
+        b.setNumber(in.readInt());
+        b.setTitle(in.readUTF());
+        b.setContent(in.readUTF());
+        b.setWriter(in.readUTF());
+        b.setRegisteredDate(Date.valueOf(in.readUTF()));
+        b.setViewCount(in.readInt());
+        b.setLike(in.readInt());
 
         boardProductList.add(b);
         System.out.println("상품 문의 로딩!");
