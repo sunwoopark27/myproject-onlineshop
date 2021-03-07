@@ -1,5 +1,7 @@
 package com.sunwoo.project.handler;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.sql.Date;
@@ -61,46 +63,18 @@ public class BoardServiceProduct {
   }
 
   static void saveBoards() {
-    try (FileOutputStream out = new FileOutputStream("boardsOfProduct.data")) { 
-      int size = boardProductList.size();
-      out.write(size >> 8);
-      out.write(size);
+    try (DataOutputStream out = new DataOutputStream(new FileOutputStream("boardsOfProduct.data"))) { 
+
+      out.writeInt(boardProductList.size());
 
       for (Board b : boardProductList) { // 번호 제목 내용 글쓴이 등록일 조회수 좋아요
-        out.write(b.getNumber() >> 24);
-        out.write(b.getNumber() >> 16);
-        out.write(b.getNumber() >> 8);
-        out.write(b.getNumber());
-
-        byte[] buf = b.getTitle().getBytes("UTF-8");
-        out.write(buf.length >> 8);
-        out.write(buf.length);
-        out.write(buf);
-
-        buf = b.getContent().getBytes("UTF-8");
-        out.write(buf.length >> 8);
-        out.write(buf.length);
-        out.write(buf);
-
-        buf = b.getWriter().getBytes("UTF-8");
-        out.write(buf.length >> 8);
-        out.write(buf.length);
-        out.write(buf);
-
-        buf = b.getRegisteredDate().toString().getBytes("UTF-8");
-        out.write(buf.length >> 8);
-        out.write(buf.length);
-        out.write(buf);
-
-        out.write(b.getViewCount() >> 24);
-        out.write(b.getViewCount() >> 16);
-        out.write(b.getViewCount() >> 8);
-        out.write(b.getViewCount());
-
-        out.write(b.getLike() >> 24);
-        out.write(b.getLike() >> 16);
-        out.write(b.getLike() >> 8);
-        out.write(b.getLike());
+        out.writeInt(b.getNumber());
+        out.writeUTF(b.getTitle());
+        out.writeUTF(b.getContent());
+        out.writeUTF(b.getWriter());
+        out.writeUTF(b.getRegisteredDate().toString());
+        out.writeInt(b.getViewCount());
+        out.writeInt(b.getLike());
       }
       System.out.println("상품문의가 등록되었습니다.");
 
@@ -111,8 +85,8 @@ public class BoardServiceProduct {
   }
 
   static void loadBoards() {
-    try(FileInputStream in = new FileInputStream("boardsOfProduct.data")) {
-      int size = in.read() << 8 | in.read();
+    try(DataInputStream in = new DataInputStream(new FileInputStream("boardsOfProduct.data"))) {
+      int size = in.readInt();
 
       for(int i = 0; i < size ; i++) {// 번호 제목 내용 글쓴이 등록일 조회수 좋아요
         Board b = new Board();
