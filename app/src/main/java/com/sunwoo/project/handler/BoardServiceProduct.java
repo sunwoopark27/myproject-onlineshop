@@ -99,5 +99,4 @@ public class BoardServiceProduct {
       System.out.printf("파일 %s 저장 중 오류 발생!\n", file.getName());
     }
   }
-
 }
