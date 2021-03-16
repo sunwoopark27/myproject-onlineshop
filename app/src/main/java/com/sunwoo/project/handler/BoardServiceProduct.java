@@ -1,11 +1,13 @@
 package com.sunwoo.project.handler;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Scanner;
 import com.sunwoo.project.App;
 import com.sunwoo.project.domain.Board;
 
@@ -60,96 +62,48 @@ public class BoardServiceProduct {
     }
   }
 
+  static void loadBoards() {
+    try(Scanner in = new Scanner(new FileReader("boardsOfProduct.data"))) {
+      while (true) {
+        try {
+          String record = in.nextLine();
+          String[] fields = record.split(",");
+          Board b = new Board();
+          b.setNumber(Integer.parseInt(fields[0]));
+          b.setTitle(fields[1]);
+          b.setContent(fields[2]);
+          b.setWriter(fields[3]);
+          b.setRegisteredDate(Date.valueOf(fields[4]));
+          b.setViewCount(Integer.parseInt(fields[5]));
+
+          boardProductList.add(b);
+          System.out.println("상품 문의 로딩!");
+        }catch (NoSuchElementException e) {
+          break;
+        }
+      }
+    } catch (Exception e) {
+      System.out.println("상품 문의 데이터 로딩 중 오류 발생!");
+    }
+  }
+
   static void saveBoards() {
-    try (FileOutputStream out = new FileOutputStream("boardsOfProduct.data")) { 
-      int size = boardProductList.size();
-      out.write(size >> 8);
-      out.write(size);
+    try (FileWriter out = new FileWriter("boardsOfProduct.data")) { 
 
-      for (Board b : boardProductList) { // 번호 제목 내용 글쓴이 등록일 조회수 좋아요
-        out.write(b.getNumber() >> 24);
-        out.write(b.getNumber() >> 16);
-        out.write(b.getNumber() >> 8);
-        out.write(b.getNumber());
-
-        byte[] buf = b.getTitle().getBytes("UTF-8");
-        out.write(buf.length >> 8);
-        out.write(buf.length);
-        out.write(buf);
-
-        buf = b.getContent().getBytes("UTF-8");
-        out.write(buf.length >> 8);
-        out.write(buf.length);
-        out.write(buf);
-
-        buf = b.getWriter().getBytes("UTF-8");
-        out.write(buf.length >> 8);
-        out.write(buf.length);
-        out.write(buf);
-
-        buf = b.getRegisteredDate().toString().getBytes("UTF-8");
-        out.write(buf.length >> 8);
-        out.write(buf.length);
-        out.write(buf);
-
-        out.write(b.getViewCount() >> 24);
-        out.write(b.getViewCount() >> 16);
-        out.write(b.getViewCount() >> 8);
-        out.write(b.getViewCount());
-
-        out.write(b.getLike() >> 24);
-        out.write(b.getLike() >> 16);
-        out.write(b.getLike() >> 8);
-        out.write(b.getLike());
+      for (Board b : boardProductList) { // 번호 제목 내용 글쓴이 등록일 조회수(CRLF)
+        out.write(String.format("%d,%s,%s,%s,%s,%d\n",
+            b.getNumber(),
+            b.getTitle(),
+            b.getContent(),
+            b.getWriter(),
+            b.getRegisteredDate(),
+            b.getViewCount()));
       }
       System.out.println("상품문의가 등록되었습니다.");
 
     } catch (Exception e) {
       System.out.println("상품문의 데이터 파일로 저장 중 오류 발생!");
       e.printStackTrace();
-    }
-  }
-
-  static void loadBoards() {
-    try(FileInputStream in = new FileInputStream("boardsOfProduct.data")) {
-      int size = in.read() << 8 | in.read();
-
-      for(int i = 0; i < size ; i++) {// 번호 제목 내용 글쓴이 등록일 조회수 좋아요
-        Board b = new Board();
-
-        int value = in.read() << 24 | in.read() << 16 | in.read() << 8 | in.read();
-        b.setNumber(value);
-
-        byte[] bytes = new byte[30000];
-
-        int len = in.read() << 8 | in.read();
-        in.read(bytes, 0, len);
-        b.setTitle(new String(bytes, 0, len, "UTF-8"));
-
-        len = in.read() << 8 | in.read();
-        in.read(bytes, 0, len);
-        b.setContent(new String(bytes, 0, len, "UTF-8"));
-
-        len = in.read() << 8 | in.read();
-        in.read(bytes, 0, len);
-        b.setWriter(new String(bytes, 0, len, "UTF-8"));
-
-        len = in.read() << 8 | in.read();
-        in.read(bytes, 0, len);
-        b.setRegisteredDate(Date.valueOf(new String(bytes, 0, len, "UTF-8")));
-
-        value = in.read() << 24 | in.read() << 16 | in.read() << 8 | in.read();
-        b.setViewCount(value);
-
-        value = in.read() << 24 | in.read() << 16 | in.read() << 8 | in.read();
-        b.setLike(value);
-
-        boardProductList.add(b);
-        System.out.println("상품 문의 로딩!");
-      }
-
-    } catch (Exception e) {
-      System.out.println("상품 문의 데이터 로딩 중 오류 발생!");
     }
   }
 
