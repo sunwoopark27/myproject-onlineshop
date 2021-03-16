@@ -1,13 +1,8 @@
 package com.sunwoo.project.handler;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,14 +11,11 @@ import com.sunwoo.project.domain.Board;
 
 public class BoardServiceProduct {
 
-  static List<Board> boardProductList; //상품 문의
-
-  static File boardsOfProduct = new File("boardsOfProduct.data");
+  static List<Board> boardProductList = new ArrayList<>(); //상품 문의
 
   public void menu(String choice) {
 
-    boardProductList = loadObjects(boardsOfProduct, Board.class);
-
+    loadBoards();
     HashMap<String,Command> commandMap = new HashMap<>();
 
     commandMap.put("1", new BoardAddHandler(boardProductList));
@@ -50,16 +42,12 @@ public class BoardServiceProduct {
             System.out.println("게시판으로 돌아갑니다.");
             System.out.println();
             App.chooseBoard();
-            break;
-
           default :
             Command commandHandler = commandMap.get(command);
             if(commandHandler == null) {
               System.out.println("실행할 수 없는 메뉴 번호 입니다.");
-              break;
             } else {
               commandHandler.service();
-              break;
             }
         }
       }catch(Exception e) {
@@ -67,36 +55,102 @@ public class BoardServiceProduct {
         System.out.printf("명령어 실행 중 오류 발생: %s - %s\n", e.getClass().getName(), e.getMessage());
         System.out.println("------------------------------------------------------------------------------");
       }
-      saveObjects(boardsOfProduct, boardProductList);
+      saveBoards();
       System.out.println();
     }
   }
 
-  @SuppressWarnings("unchecked")
-  static <T extends Serializable> List<T> loadObjects(File file, Class<T> dataType) {
-    try(ObjectInputStream in = new ObjectInputStream(
-        new BufferedInputStream(
-            new FileInputStream(file)))) {
+  static void saveBoards() {
+    try (FileOutputStream out = new FileOutputStream("boardsOfProduct.data")) { 
+      int size = boardProductList.size();
+      out.write(size >> 8);
+      out.write(size);
 
-      System.out.printf("파일 %s 로딩!\n", file.getName());
-      return (List<T>) in.readObject();
+      for (Board b : boardProductList) { // 번호 제목 내용 글쓴이 등록일 조회수 좋아요
+        out.write(b.getNumber() >> 24);
+        out.write(b.getNumber() >> 16);
+        out.write(b.getNumber() >> 8);
+        out.write(b.getNumber());
+
+        byte[] buf = b.getTitle().getBytes("UTF-8");
+        out.write(buf.length >> 8);
+        out.write(buf.length);
+        out.write(buf);
+
+        buf = b.getContent().getBytes("UTF-8");
+        out.write(buf.length >> 8);
+        out.write(buf.length);
+        out.write(buf);
+
+        buf = b.getWriter().getBytes("UTF-8");
+        out.write(buf.length >> 8);
+        out.write(buf.length);
+        out.write(buf);
+
+        buf = b.getRegisteredDate().toString().getBytes("UTF-8");
+        out.write(buf.length >> 8);
+        out.write(buf.length);
+        out.write(buf);
+
+        out.write(b.getViewCount() >> 24);
+        out.write(b.getViewCount() >> 16);
+        out.write(b.getViewCount() >> 8);
+        out.write(b.getViewCount());
+
+        out.write(b.getLike() >> 24);
+        out.write(b.getLike() >> 16);
+        out.write(b.getLike() >> 8);
+        out.write(b.getLike());
+      }
+      System.out.println("상품문의가 등록되었습니다.");
 
     } catch (Exception e) {
-      System.out.printf("파일 %s 로딩 중 오류 발생!\n", file.getName());
-      return new ArrayList<T>();
+      System.out.println("상품문의 데이터 파일로 저장 중 오류 발생!");
+      e.printStackTrace();
     }
   }
 
-  static <T extends Serializable>void saveObjects(File file, List<T> dataList) {
-    try (ObjectOutputStream out = new ObjectOutputStream(
-        new BufferedOutputStream(
-            new FileOutputStream(file)))) { 
+  static void loadBoards() {
+    try(FileInputStream in = new FileInputStream("boardsOfProduct.data")) {
+      int size = in.read() << 8 | in.read();
 
-      out.writeObject(dataList);
-      System.out.printf("파일 %s 저장!\n", file.getName());
+      for(int i = 0; i < size ; i++) {// 번호 제목 내용 글쓴이 등록일 조회수 좋아요
+        Board b = new Board();
+
+        int value = in.read() << 24 | in.read() << 16 | in.read() << 8 | in.read();
+        b.setNumber(value);
+
+        byte[] bytes = new byte[30000];
+
+        int len = in.read() << 8 | in.read();
+        in.read(bytes, 0, len);
+        b.setTitle(new String(bytes, 0, len, "UTF-8"));
+
+        len = in.read() << 8 | in.read();
+        in.read(bytes, 0, len);
+        b.setContent(new String(bytes, 0, len, "UTF-8"));
+
+        len = in.read() << 8 | in.read();
+        in.read(bytes, 0, len);
+        b.setWriter(new String(bytes, 0, len, "UTF-8"));
+
+        len = in.read() << 8 | in.read();
+        in.read(bytes, 0, len);
+        b.setRegisteredDate(Date.valueOf(new String(bytes, 0, len, "UTF-8")));
+
+        value = in.read() << 24 | in.read() << 16 | in.read() << 8 | in.read();
+        b.setViewCount(value);
+
+        value = in.read() << 24 | in.read() << 16 | in.read() << 8 | in.read();
+        b.setLike(value);
+
+        boardProductList.add(b);
+        System.out.println("상품 문의 로딩!");
+      }
 
     } catch (Exception e) {
-      System.out.printf("파일 %s 저장 중 오류 발생!\n", file.getName());
+      System.out.println("상품 문의 데이터 로딩 중 오류 발생!");
     }
   }
+
 }
