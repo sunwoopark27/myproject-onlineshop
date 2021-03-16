@@ -1,13 +1,13 @@
 package com.sunwoo.project.handler;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Scanner;
 import com.sunwoo.project.domain.Board;
 
 public class BoardServiceProduct {
@@ -62,32 +62,30 @@ public class BoardServiceProduct {
   }
 
   static void loadBoards() {
-    try(Scanner in = new Scanner(new FileReader("boardsOfProduct.data"))) {
-      while (true) {
-        try {
-          String record = in.nextLine();
-          String[] fields = record.split(",");
-          Board b = new Board();
-          b.setNumber(Integer.parseInt(fields[0]));
-          b.setTitle(fields[1]);
-          b.setContent(fields[2]);
-          b.setWriter(fields[3]);
-          b.setRegisteredDate(Date.valueOf(fields[4]));
-          b.setViewCount(Integer.parseInt(fields[5]));
+    try(BufferedReader in = new BufferedReader(new FileReader("boardsOfProduct.data"))) {
 
-          boardProductList.add(b);
-          System.out.println("상품 문의 로딩!");
-        }catch (NoSuchElementException e) {
-          break;
-        }
+      String record = null;
+      while ((record = in.readLine()) != null) {
+        String[] fields = record.split(",");
+        Board b = new Board();
+        b.setNumber(Integer.parseInt(fields[0]));
+        b.setTitle(fields[1]);
+        b.setContent(fields[2]);
+        b.setWriter(fields[3]);
+        b.setRegisteredDate(Date.valueOf(fields[4]));
+        b.setViewCount(Integer.parseInt(fields[5]));
+
+        boardProductList.add(b);
       }
+      System.out.println("상품 문의 로딩!");
+
     } catch (Exception e) {
       System.out.println("상품 문의 데이터 로딩 중 오류 발생!");
     }
   }
 
   static void saveBoards() {
-    try (FileWriter out = new FileWriter("boardsOfProduct.data")) { 
+    try (BufferedWriter out = new BufferedWriter(new FileWriter("boardsOfProduct.data"))) { 
 
       for (Board b : boardProductList) { // 번호 제목 내용 글쓴이 등록일 조회수(CRLF)
         out.write(String.format("%d,%s,%s,%s,%s,%d\n",
