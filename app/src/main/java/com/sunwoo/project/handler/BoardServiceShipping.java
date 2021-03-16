@@ -4,7 +4,6 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import com.sunwoo.project.App;
 import com.sunwoo.project.domain.Board;
 
 public class BoardServiceShipping {
@@ -38,7 +37,7 @@ public class BoardServiceShipping {
           case "0" :
             System.out.println("게시판으로 돌아갑니다.");
             System.out.println();
-            App.chooseBoard();
+            return;
           default :
             Command commandHandler = commandMap.get(command);
             if(commandHandler == null) {

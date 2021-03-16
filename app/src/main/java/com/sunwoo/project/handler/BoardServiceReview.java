@@ -2,7 +2,6 @@ package com.sunwoo.project.handler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import com.sunwoo.project.App;
 import com.sunwoo.project.domain.Board;
 
 public class BoardServiceReview {
@@ -36,7 +35,7 @@ public class BoardServiceReview {
           case "0" :
             System.out.println("게시판으로 돌아갑니다.");
             System.out.println();
-            App.chooseBoard();
+            return;
           default :
             Command commandHandler = commandMap.get(command);
             if(commandHandler == null) {

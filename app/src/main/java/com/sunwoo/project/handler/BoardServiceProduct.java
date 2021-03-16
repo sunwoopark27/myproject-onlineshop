@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -64,18 +63,9 @@ public class BoardServiceProduct {
   static void loadBoards() {
     try(BufferedReader in = new BufferedReader(new FileReader("boardsOfProduct.data"))) {
 
-      String record = null;
-      while ((record = in.readLine()) != null) {
-        String[] fields = record.split(",");
-        Board b = new Board();
-        b.setNumber(Integer.parseInt(fields[0]));
-        b.setTitle(fields[1]);
-        b.setContent(fields[2]);
-        b.setWriter(fields[3]);
-        b.setRegisteredDate(Date.valueOf(fields[4]));
-        b.setViewCount(Integer.parseInt(fields[5]));
-
-        boardProductList.add(b);
+      String csvStr = null;
+      while ((csvStr = in.readLine()) != null) {
+        boardProductList.add(Board.valueOfCsv(csvStr));
       }
       System.out.println("상품 문의 로딩!");
 
@@ -88,13 +78,7 @@ public class BoardServiceProduct {
     try (BufferedWriter out = new BufferedWriter(new FileWriter("boardsOfProduct.data"))) { 
 
       for (Board b : boardProductList) { // 번호 제목 내용 글쓴이 등록일 조회수(CRLF)
-        out.write(String.format("%d,%s,%s,%s,%s,%d\n",
-            b.getNumber(),
-            b.getTitle(),
-            b.getContent(),
-            b.getWriter(),
-            b.getRegisteredDate(),
-            b.getViewCount()));
+        out.write(b.toCsvString());
       }
       System.out.println("상품문의가 등록되었습니다.");
 
