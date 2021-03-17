@@ -1,20 +1,19 @@
 package com.sunwoo.project.domain;
 
-import java.io.Serializable;
 import java.sql.Date;
+import com.sunwoo.util.CsvObject;
 
-public class Board implements Serializable {
+public class Board implements CsvObject {
 
-  private static final long serialVersionUID = 1L;
-
-  private int number;//
-  private String title;//
-  private String content;//
-  private String writer;//
-  private Date registeredDate;//
+  private int number;
+  private String title;
+  private String content;
+  private String writer;
+  private Date registeredDate;
   private int viewCount;
   private int like;
 
+  @Override
   public String toCsvString() {
     return String.format("%d,%s,%s,%s,%s,%d\n",
         this.getNumber(),
