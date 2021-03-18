@@ -1,5 +1,8 @@
 package com.sunwoo.project.handler;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.sql.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import com.sunwoo.project.domain.Member;
@@ -7,7 +10,7 @@ import com.sunwoo.util.Prompt;
 
 public class MemberService {
 
-  private LinkedList<Member> memberList = new LinkedList<>();
+  static LinkedList<Member> memberList = new LinkedList<>();
   public LinkedList<Member> getMemberList() {
     return memberList;
   }
@@ -18,6 +21,8 @@ public class MemberService {
   //  }
 
   public void menu() {
+
+    loadMembers();
 
     HashMap<String,Command> commandMap = new HashMap<>();
 
@@ -63,6 +68,7 @@ public class MemberService {
         }
         System.out.println();
       }
+    saveMembers();
   }
 
   String inputMemberId(){
@@ -110,4 +116,121 @@ public class MemberService {
     return null;
   }
 
+  static void loadMembers() {
+
+    try(FileInputStream in = new FileInputStream("members.data")) {
+      int size = in.read() << 8 | in.read();
+
+      for(int i = 0; i < size; i++) {
+        Member member = new Member();
+
+        int value = in.read() << 24;
+        value += in.read() << 16;
+        value += in.read() << 8;
+        value += in.read();
+        member.setNumber(value);
+
+        // 문자열을 읽을 바이트 배열
+        byte[] bytes = new byte[30000];
+
+        int len = in.read() << 8 | in.read();
+        in.read(bytes, 0, len);
+        member.setName(new String(bytes, 0, len, "UTF-8"));
+
+        len = in.read() << 8 | in.read();
+        in.read(bytes, 0, len);
+        member.setId(new String(bytes, 0, len, "UTF-8"));
+
+        len = in.read() << 8 | in.read();
+        in.read(bytes, 0, len);
+        member.setPassword(new String(bytes, 0, len, "UTF-8"));
+
+        len = in.read() << 8 | in.read();
+        in.read(bytes, 0, len);
+        member.setTel(new String(bytes, 0, len, "UTF-8"));
+
+        len = in.read() << 8 | in.read();
+        in.read(bytes, 0, len);
+        member.setAddress(new String(bytes, 0, len, "UTF-8"));
+
+        len = in.read() << 8 | in.read();
+        in.read(bytes, 0, len);
+        member.setEmail(new String(bytes, 0, len, "UTF-8"));
+
+        len = in.read() << 8 | in.read();
+        in.read(bytes, 0, len);
+        member.setJoinDate(Date.valueOf(new String(bytes, 0, len, "UTF-8")));
+
+        memberList.add(member);
+      }
+
+      System.out.println("멤버 데이터 로딩!");
+
+    } catch (Exception e) {
+
+      System.out.println("멤버 데이터 로딩 중 오류 발생!");
+
+    }
+
+  }
+
+  static void saveMembers() {
+
+    try(FileOutputStream out = new FileOutputStream("members.data")) {
+
+      out.write(memberList.size() >> 8);
+      out.write(memberList.size());
+
+      for (Member member : memberList) {
+        out.write(member.getNumber() >> 24);
+        out.write(member.getNumber() >> 16);
+        out.write(member.getNumber() >> 8);
+        out.write(member.getNumber());
+
+
+        byte[] bytes = member.getName().getBytes("UTF-8");
+        out.write(bytes.length >> 8);
+        out.write(bytes.length);
+        out.write(bytes);
+
+        bytes = member.getId().getBytes("UTF-8");
+        out.write(bytes.length >> 8);
+        out.write(bytes.length);
+        out.write(bytes);
+
+        bytes = member.getPassword().getBytes("UTF-8");
+        out.write(bytes.length >> 8);
+        out.write(bytes.length);
+        out.write(bytes);
+
+        bytes = member.getTel().getBytes("UTF-8");
+        out.write(bytes.length >> 8);
+        out.write(bytes.length);
+        out.write(bytes);
+
+        bytes = member.getAddress().getBytes("UTF-8");
+        out.write(bytes.length >> 8);
+        out.write(bytes.length);
+        out.write(bytes);
+
+        bytes = member.getEmail().getBytes("UTF-8");
+        out.write(bytes.length >> 8);
+        out.write(bytes.length);
+        out.write(bytes);
+
+        bytes = member.getJoinDate().toString().getBytes("UTF-8");
+        out.write(bytes.length >> 8);
+        out.write(bytes.length);
+        out.write(bytes);
+
+      }
+      System.out.println("회원 데이터 저장!");
+
+    } catch(Exception e) {
+
+      System.out.println("회원 데이터 파일로 저장 중 오류 발생!");
+
+    }
+
+  }
 }
