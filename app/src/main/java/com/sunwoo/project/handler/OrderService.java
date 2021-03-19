@@ -93,10 +93,19 @@ public  class OrderService {
       out.write(size);
 
       for (Order o : orderList) {
+
+        byte[] buf = o.getMemberId().getBytes("UTF-8");
+        out.write(buf.length >> 8);
+        out.write(buf.length);
+        out.write(buf);
+
         out.write(o.getNumber() >> 24);
         out.write(o.getNumber() >> 16);
         out.write(o.getNumber() >> 8);
         out.write(o.getNumber());
+
+        buf = o.getProduct().getByte
+            out.write(o.getProduct());
       }
 
 
