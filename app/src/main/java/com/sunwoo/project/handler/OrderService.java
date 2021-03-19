@@ -1,5 +1,8 @@
 package com.sunwoo.project.handler;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import com.sunwoo.project.domain.Order;
@@ -65,4 +68,40 @@ public  class OrderService {
       }
   }
 
+  private String memberId;//
+  private int number;//
+  private String products;  //
+  private Date registeredDate; //  
+  private String request;
+  private int totalPrice;
+
+  private void loadOrders() {
+    try(FileInputStream in = new FileInputStream("orders.data")) {
+
+
+
+    } catch (Exception e) {
+
+    }
+  }
+
+  private void saveOrders() {
+    try(FileOutputStream  out = new FileOutputStream("orders.data")) {
+
+      int size = orderList.size();
+      out.write(size >> 8);
+      out.write(size);
+
+      for (Order o : orderList) {
+        out.write(o.getNumber() >> 24);
+        out.write(o.getNumber() >> 16);
+        out.write(o.getNumber() >> 8);
+        out.write(o.getNumber());
+      }
+
+
+    } catch (Exception e) {
+
+    }
+  }
 }
