@@ -1,5 +1,6 @@
 package com.sunwoo.project.handler;
 
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -67,7 +68,14 @@ public class ProductService {
   private String photo;
 
   static void loadProducts() {
+    try(FileInputStream in = new FileInputStream("products.data")){
 
+      int size = in.read() << 8 | in.read();
+
+      for(int i = 0;)
+    } catch (Exception e) {
+      System.out.println("상품 데이터 로딩 중 오류 발생!");
+    }
   }
 
   static void saveProducts() {
