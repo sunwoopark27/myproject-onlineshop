@@ -1,5 +1,6 @@
 package com.sunwoo.project.handler;
 
+import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.LinkedList;
 import com.sunwoo.project.domain.Product;
@@ -7,7 +8,7 @@ import com.sunwoo.util.Prompt;
 
 public class ProductService {
 
-  LinkedList<Product> productList = new LinkedList<>();
+  static LinkedList<Product> productList = new LinkedList<>();
 
   public LinkedList<Product> getProductList() {
     return productList;
@@ -59,5 +60,49 @@ public class ProductService {
         System.out.println();
       }
   }
+
+  private int number;//
+  private String name;//
+  private int price;//
+  private String photo;
+
+  static void loadProducts() {
+
+  }
+
+  static void saveProducts() {
+    try(FileOutputStream out = new FileOutputStream("products.data")) {
+
+      out.write(productList.size() >> 8);
+      out.write(productList.size());
+
+      for (Product product : productList) {
+        out.write(product.getNumber() >> 24);
+        out.write(product.getNumber() >> 16);
+        out.write(product.getNumber() >> 8);
+        out.write(product.getNumber());
+
+        byte[] bytes = product.getName().getBytes("UTF-8");
+        out.write(bytes.length >> 8);
+        out.write(bytes.length);
+        out.write(bytes);
+
+        out.write(product.getPrice() >> 24);
+        out.write(product.getPrice() >> 16);
+        out.write(product.getPrice() >> 8);
+        out.write(product.getPrice());
+
+        bytes = product.getPhoto().getBytes("UTF-8");
+        out.write(bytes.length >> 8);
+        out.write(bytes.length);
+        out.write(bytes);
+      }
+
+      System.out.println("상품 데이터 저장!");
+    } catch (Exception e) {
+      System.out.println("상품 데이터 파일로 저장 중 오류 발생!");
+    }
+  }
+
 }
 
