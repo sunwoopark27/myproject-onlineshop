@@ -72,7 +72,9 @@ public class ProductService {
 
       int size = in.read() << 8 | in.read();
 
-      for(int i = 0;)
+      for(int i = 0; i < size; i++) {
+
+      }
     } catch (Exception e) {
       System.out.println("상품 데이터 로딩 중 오류 발생!");
     }
