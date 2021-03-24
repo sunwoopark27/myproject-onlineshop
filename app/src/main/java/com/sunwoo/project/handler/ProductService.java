@@ -17,6 +17,8 @@ public class ProductService {
 
   public void menu() {
 
+    loadProducts();
+
     HashMap<String,Command> commandMap = new HashMap<>();
 
     commandMap.put("1", new ProductAddHandler(productList));
@@ -60,12 +62,8 @@ public class ProductService {
         }
         System.out.println();
       }
+    saveProducts();
   }
-
-  private int number;//
-  private String name;//
-  private int price;//
-  private String photo;
 
   static void loadProducts() {
     try(FileInputStream in = new FileInputStream("products.data")){
@@ -74,6 +72,32 @@ public class ProductService {
 
       for(int i = 0; i < size; i++) {
 
+        Product product = new Product();
+
+        byte[] bytes = new byte[30000];
+
+        int value = in.read() << 24;
+        value += in.read() << 16;
+        value += in.read() << 8;
+        value += in.read();
+        product.setNumber(value);
+
+        int len = in.read() << 8 | in.read();
+        in.read(bytes, 0, len);
+        product.setName(new String(bytes, 0, len, "UTF-8"));
+
+        value = in.read() << 24;
+        value += in.read() << 16;
+        value += in.read() << 8;
+        value += in.read();
+        product.setPrice(value);
+
+        len = in.read() << 8 | in.read();
+        in.read(bytes, 0, len);
+        product.setPhoto(new String(bytes, 0, len, "UTF-8"));
+
+        productList.add(product);
+        System.out.println("상품 데이터 로딩!");
       }
     } catch (Exception e) {
       System.out.println("상품 데이터 로딩 중 오류 발생!");
