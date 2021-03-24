@@ -1,10 +1,11 @@
 package com.sunwoo.project.handler;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.sql.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Scanner;
 import com.sunwoo.project.domain.Member;
 import com.sunwoo.util.Prompt;
 
@@ -118,52 +119,27 @@ public class MemberService {
 
   static void loadMembers() {
 
-    try(FileInputStream in = new FileInputStream("members.data")) {
-      int size = in.read() << 8 | in.read();
+    try(Scanner in = new Scanner(new FileReader("members.data"))) {
 
-      for(int i = 0; i < size; i++) {
-        Member member = new Member();
+      while(true) {
+        try {
+          String record = in.nextLine();
+          String[] fields = record.split(",");
+          Member m = new Member();
+          m.setNumber(Integer.parseInt(fields[0]));
+          m.setName(fields[1]);
+          m.setId(fields[2]);
+          m.setPassword(fields[3]);
+          m.setTel(fields[4]);
+          m.setAddress(fields[5]);
+          m.setEmail(fields[6]);
+          m.setJoinDate(Date.valueOf(fields[7]));
 
-        int value = in.read() << 24;
-        value += in.read() << 16;
-        value += in.read() << 8;
-        value += in.read();
-        member.setNumber(value);
-
-        // 문자열을 읽을 바이트 배열
-        byte[] bytes = new byte[30000];
-
-        int len = in.read() << 8 | in.read();
-        in.read(bytes, 0, len);
-        member.setName(new String(bytes, 0, len, "UTF-8"));
-
-        len = in.read() << 8 | in.read();
-        in.read(bytes, 0, len);
-        member.setId(new String(bytes, 0, len, "UTF-8"));
-
-        len = in.read() << 8 | in.read();
-        in.read(bytes, 0, len);
-        member.setPassword(new String(bytes, 0, len, "UTF-8"));
-
-        len = in.read() << 8 | in.read();
-        in.read(bytes, 0, len);
-        member.setTel(new String(bytes, 0, len, "UTF-8"));
-
-        len = in.read() << 8 | in.read();
-        in.read(bytes, 0, len);
-        member.setAddress(new String(bytes, 0, len, "UTF-8"));
-
-        len = in.read() << 8 | in.read();
-        in.read(bytes, 0, len);
-        member.setEmail(new String(bytes, 0, len, "UTF-8"));
-
-        len = in.read() << 8 | in.read();
-        in.read(bytes, 0, len);
-        member.setJoinDate(Date.valueOf(new String(bytes, 0, len, "UTF-8")));
-
-        memberList.add(member);
+          memberList.add(m);
+        } catch(Exception e){
+          break;
+        }
       }
-
       System.out.println("멤버 데이터 로딩!");
 
     } catch (Exception e) {
@@ -176,52 +152,18 @@ public class MemberService {
 
   static void saveMembers() {
 
-    try(FileOutputStream out = new FileOutputStream("members.data")) {
+    try(FileWriter out = new FileWriter("members.data")) {
 
-      out.write(memberList.size() >> 8);
-      out.write(memberList.size());
-
-      for (Member member : memberList) {
-        out.write(member.getNumber() >> 24);
-        out.write(member.getNumber() >> 16);
-        out.write(member.getNumber() >> 8);
-        out.write(member.getNumber());
-
-
-        byte[] bytes = member.getName().getBytes("UTF-8");
-        out.write(bytes.length >> 8);
-        out.write(bytes.length);
-        out.write(bytes);
-
-        bytes = member.getId().getBytes("UTF-8");
-        out.write(bytes.length >> 8);
-        out.write(bytes.length);
-        out.write(bytes);
-
-        bytes = member.getPassword().getBytes("UTF-8");
-        out.write(bytes.length >> 8);
-        out.write(bytes.length);
-        out.write(bytes);
-
-        bytes = member.getTel().getBytes("UTF-8");
-        out.write(bytes.length >> 8);
-        out.write(bytes.length);
-        out.write(bytes);
-
-        bytes = member.getAddress().getBytes("UTF-8");
-        out.write(bytes.length >> 8);
-        out.write(bytes.length);
-        out.write(bytes);
-
-        bytes = member.getEmail().getBytes("UTF-8");
-        out.write(bytes.length >> 8);
-        out.write(bytes.length);
-        out.write(bytes);
-
-        bytes = member.getJoinDate().toString().getBytes("UTF-8");
-        out.write(bytes.length >> 8);
-        out.write(bytes.length);
-        out.write(bytes);
+      for (Member m : memberList) {
+        out.write(String.format("%d,%s,%s,%s,%s%s,%s,%s",
+            m.getNumber(),
+            m.getName(),
+            m.getId(),
+            m.getPassword(),
+            m.getTel(),
+            m.getAddress(),
+            m.getEmail(),
+            m.getJoinDate()));
 
       }
       System.out.println("회원 데이터 저장!");
