@@ -1,10 +1,11 @@
 package com.sunwoo.project.handler;
 
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Scanner;
 import com.sunwoo.project.domain.Order;
 
 public  class OrderService {
@@ -72,44 +73,26 @@ public  class OrderService {
   }
 
   private void loadOrders() {
-    try(FileInputStream in = new FileInputStream("orders.data")) {
-      int size = in.read() << 8 | in.read();
+    try(Scanner in = new Scanner(new FileInputStream("orders.data"))) {
 
-      for (int i = 0; i < size; i++) {
-        Order order = new Order();
+      while (true) {
+        try {
+          String record = in.nextLine();
+          String[] fields = record.split(",");
+          Order o = new Order();
+          o.setMemberId(fields[0]);
+          o.setNumber(Integer.parseInt(fields[1]));
+          o.setProducts(fields[2]);
+          o.setRegisteredDate(Date.valueOf(fields[3]));
+          o.setRequest(fields[4]);
+          o.setTotalPrice(Integer.parseInt(fields[5]));
 
-        byte[] bytes = new byte[30000];
-
-        int len = in.read() << 8 | in.read();
-        in.read(bytes, 0, len);
-        order.setMemberId(new String(bytes,0,len,"UTF-8"));
-
-        int value = in.read() << 24;
-        value += in.read() << 16;
-        value += in.read() << 8;
-        value += in.read();
-        order.setNumber(value);
-
-        len = in.read() << 8 | in.read();
-        in.read(bytes, 0, len);
-        order.setProducts(new String(bytes, 0, len, "UTF-8"));
-
-        len = in.read() << 8 | in.read();
-        in.read(bytes, 0, len);
-        order.setRegisteredDate(Date.valueOf(new String(bytes, 0, len, "UTF-8")));
-
-        len = in.read() << 8 | in.read();
-        in.read(bytes, 0, len);
-        order.setRequest(new String(bytes, 0, len, "UTF-8"));
-
-        value = in.read() << 24;
-        value += in.read() << 16;
-        value += in.read() << 8;
-        value += in.read();
-        order.setTotalPrice(value);
-
-        orderList.add(order);
+          orderList.add(o);
+        } catch (Exception e) {
+          break;
+        }
       }
+
       System.out.println("주문 데이터 로딩!");
 
     } catch (Exception e) {
@@ -118,44 +101,17 @@ public  class OrderService {
   }
 
   private void saveOrders() {
-    try(FileOutputStream  out = new FileOutputStream("orders.data")) {
-
-      int size = orderList.size();
-      out.write(size >> 8);
-      out.write(size);
+    try(FileWriter out = new FileWriter("orders.data")) {
 
       for (Order o : orderList) {
 
-        byte[] buf = o.getMemberId().getBytes("UTF-8");
-        out.write(buf.length >> 8);
-        out.write(buf.length);
-        out.write(buf);
-
-        out.write(o.getNumber() >> 24);
-        out.write(o.getNumber() >> 16);
-        out.write(o.getNumber() >> 8);
-        out.write(o.getNumber());
-
-        buf = o.getProducts().getBytes("UTF-8");
-        out.write(buf.length >> 8);
-        out.write(buf.length);
-        out.write(buf);
-
-        buf = o.getRegisteredDate().toString().getBytes("UTF-8");
-        out.write(buf.length >> 8);
-        out.write(buf.length);
-        out.write(buf);
-
-        buf = o.getRequest().getBytes("UTF-8");
-        out.write(buf.length >> 8);
-        out.write(buf.length);
-        out.write(buf);
-
-        out.write(o.getTotalPrice() >> 24);
-        out.write(o.getTotalPrice() >> 16);
-        out.write(o.getTotalPrice() >> 8);
-        out.write(o.getTotalPrice());
-
+        out.write(String .format("%d,%s,%s,%s,%d",
+            o.getNumber(),
+            o.getProducts(),
+            o.getRegisteredDate(),
+            o.getRequest(),
+            o.getRequest()
+            ));
       }
       System.out.println("주문 데이터 저장");
 
