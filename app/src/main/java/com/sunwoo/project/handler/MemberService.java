@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Scanner;
 import com.sunwoo.project.domain.Member;
-import com.sunwoo.util.Prompt;
 
 public class MemberService {
 
@@ -16,10 +15,10 @@ public class MemberService {
     return memberList;
   }
 
-  //  MemberValidatorHandler memberValidatorHandler = new MemberValidatorHandler(memberList);
-  //  public MemberValidatorHandler getMemberValidatorHandler() {
-  //    return memberValidatorHandler;
-  //  }
+  MemberValidatorHandler memberValidatorHandler = new MemberValidatorHandler(memberList);
+  public MemberValidatorHandler getMemberValidatorHandler() {
+    return memberValidatorHandler;
+  }
 
   public void menu() {
 
@@ -72,50 +71,50 @@ public class MemberService {
     saveMembers();
   }
 
-  String inputMemberId(){
-    while(true) {
-      String id = Prompt.inputString("회원 아이디(enter(취소)): ");
-      if(id.equals("")) {
-        return null;
-      }
-      if(findById(id) != null) {
-        return id;
-      }
-      System.out.println("등록된 회원이 아닙니다.");
-    }
-  }
-
-  String inputMember(String promptTitle) {
-    while(true) {
-      String id = Prompt.inputString(promptTitle);
-      if(id.length() == 0) {
-        return null;
-      }else if(findById(id) != null) {
-        return id;
-      }
-      System.out.println("잘못된 아이디 입니다.");
-    }
-  }
-
-  protected Member findByNo(int memberNo) {
-    Member[] list = memberList.toArray(new Member[memberList.size()]);
-    for(Member m : list) {
-      if(m.getNumber() == memberNo) {
-        return m;
-      }
-    }
-    return null;
-  }
-
-  private Member findById(String id) {
-    Member[] list = memberList.toArray(new Member[memberList.size()]);
-    for(Member m : list) {
-      if(m.getId().equals(id)) {
-        return m;
-      }
-    }
-    return null;
-  }
+  //  String inputMemberId(){
+  //    while(true) {
+  //      String id = Prompt.inputString("회원 아이디(enter(취소)): ");
+  //      if(id.equals("")) {
+  //        return null;
+  //      }
+  //      if(findById(id) != null) {
+  //        return id;
+  //      }
+  //      System.out.println("등록된 회원이 아닙니다.");
+  //    }
+  //  }
+  //
+  //  String inputMember(String promptTitle) {
+  //    while(true) {
+  //      String id = Prompt.inputString(promptTitle);
+  //      if(id.length() == 0) {
+  //        return null;
+  //      }else if(findById(id) != null) {
+  //        return id;
+  //      }
+  //      System.out.println("잘못된 아이디 입니다.");
+  //    }
+  //  }
+  //
+  //  protected Member findByNo(int memberNo) {
+  //    Member[] list = memberList.toArray(new Member[memberList.size()]);
+  //    for(Member m : list) {
+  //      if(m.getNumber() == memberNo) {
+  //        return m;
+  //      }
+  //    }
+  //    return null;
+  //  }
+  //
+  //  private Member findById(String id) {
+  //    Member[] list = memberList.toArray(new Member[memberList.size()]);
+  //    for(Member m : list) {
+  //      if(m.getId().equals(id)) {
+  //        return m;
+  //      }
+  //    }
+  //    return null;
+  //  }
 
   static void loadMembers() {
 

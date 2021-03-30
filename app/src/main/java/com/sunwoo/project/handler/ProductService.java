@@ -66,7 +66,7 @@ public class ProductService {
   }
 
   static void loadProducts() {
-    try(FileInputStream in = new FileInputStream("products.data")){
+    try(FileInputStream in = new FileInputStream("products.csv")){
 
       int size = in.read() << 8 | in.read();
 
@@ -105,7 +105,7 @@ public class ProductService {
   }
 
   static void saveProducts() {
-    try(FileOutputStream out = new FileOutputStream("products.data")) {
+    try(FileOutputStream out = new FileOutputStream("products.csv")) {
 
       out.write(productList.size() >> 8);
       out.write(productList.size());

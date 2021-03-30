@@ -31,7 +31,7 @@ public  class OrderService {
     commandMap.put("1", new OrderAddHandler(memberValidatorHandler, productValidatorHandler, orderList));
     commandMap.put("2", new OrderListHandler(orderList));
     commandMap.put("3", new OrderDetailHandler(orderList));
-    commandMap.put("4", new OrderUpdateHandler(memberValidatorHandler, productValidatorHandler, orderList));
+    commandMap.put("4", new OrderUpdateHandler(productValidatorHandler, orderList));
     commandMap.put("5", new OrderDeleteHandler(orderList));
 
 
@@ -73,7 +73,7 @@ public  class OrderService {
   }
 
   private void loadOrders() {
-    try(Scanner in = new Scanner(new FileInputStream("orders.data"))) {
+    try(Scanner in = new Scanner(new FileInputStream("orders.csv"))) {
 
       while (true) {
         try {
@@ -101,7 +101,7 @@ public  class OrderService {
   }
 
   private void saveOrders() {
-    try(FileWriter out = new FileWriter("orders.data")) {
+    try(FileWriter out = new FileWriter("orders.csv")) {
 
       for (Order o : orderList) {
 
@@ -110,7 +110,7 @@ public  class OrderService {
             o.getProducts(),
             o.getRegisteredDate(),
             o.getRequest(),
-            o.getRequest()
+            o.getTotalPrice()
             ));
       }
       System.out.println("주문 데이터 저장");

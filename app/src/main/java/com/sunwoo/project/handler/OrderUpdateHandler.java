@@ -7,12 +7,10 @@ import com.sunwoo.util.Prompt;
 
 public class OrderUpdateHandler extends AbstractOrderHandler {
 
-  private MemberValidatorHandler memberValidatorHandler;
   private ProductValidatorHandler productValidatorHandler;
 
-  public OrderUpdateHandler(MemberValidatorHandler memberValidatorHandler, ProductValidatorHandler productValidatorHandler, List<Order> orderList){
+  public OrderUpdateHandler(ProductValidatorHandler productValidatorHandler, List<Order> orderList){
     super(orderList);
-    this.memberValidatorHandler = memberValidatorHandler;
     this.productValidatorHandler = productValidatorHandler;
   }
 

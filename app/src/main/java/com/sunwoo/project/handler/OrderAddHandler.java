@@ -25,7 +25,7 @@ public class OrderAddHandler extends AbstractOrderHandler {
 
     o.setNumber(Prompt.inputInt("주문 번호: "));
 
-    o.setMemberId(memberValidatorHandler.inputMemberId()); 
+    o.setMemberId(memberValidatorHandler.inputMember("회원 아이디(enter(취소)): ")); 
     if(o.getMemberId() == null) {
       System.out.println("주문 등록을 취소합니다.");
       System.out.println();

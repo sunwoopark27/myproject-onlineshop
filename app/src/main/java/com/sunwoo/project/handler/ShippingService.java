@@ -68,7 +68,7 @@ public class ShippingService {
 
   private void loadShippings() {
 
-    try(FileInputStream in = new FileInputStream("shippings.data")) {
+    try(FileInputStream in = new FileInputStream("shippings.csv")) {
 
       int size = in.read() << 8 | in.read();
 
@@ -111,7 +111,7 @@ public class ShippingService {
   }
 
   private void saveShippings() {
-    try(FileOutputStream out = new FileOutputStream("shippings.data")) {
+    try(FileOutputStream out = new FileOutputStream("shippings.csv")) {
       out.write(shippingList.size() >> 8);
       out.write(shippingList.size());
 
