@@ -119,7 +119,7 @@ public class MemberService {
 
   static void loadMembers() {
 
-    try(Scanner in = new Scanner(new FileReader("members.data"))) {
+    try(Scanner in = new Scanner(new FileReader("members.csv"))) {
 
       while(true) {
         try {
@@ -152,10 +152,10 @@ public class MemberService {
 
   static void saveMembers() {
 
-    try(FileWriter out = new FileWriter("members.data")) {
+    try(FileWriter out = new FileWriter("members.csv")) {
 
       for (Member m : memberList) {
-        out.write(String.format("%d,%s,%s,%s,%s%s,%s,%s",
+        out.write(String.format("%d,%s,%s,%s,%s,%s,%s,%s\n",
             m.getNumber(),
             m.getName(),
             m.getId(),
