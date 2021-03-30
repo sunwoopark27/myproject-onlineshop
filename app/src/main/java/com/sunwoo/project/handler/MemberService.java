@@ -19,10 +19,11 @@ public class MemberService {
   public MemberValidatorHandler getMemberValidatorHandler() {
     return memberValidatorHandler;
   }
+  public MemberService() { // menu()를 호출하지 않아도 멤버정보가 로딩될 수 있도록 생성자에서 load
+    loadMembers();
+  }
 
   public void menu() {
-
-    loadMembers();
 
     HashMap<String,Command> commandMap = new HashMap<>();
 
@@ -71,51 +72,6 @@ public class MemberService {
     saveMembers();
   }
 
-  //  String inputMemberId(){
-  //    while(true) {
-  //      String id = Prompt.inputString("회원 아이디(enter(취소)): ");
-  //      if(id.equals("")) {
-  //        return null;
-  //      }
-  //      if(findById(id) != null) {
-  //        return id;
-  //      }
-  //      System.out.println("등록된 회원이 아닙니다.");
-  //    }
-  //  }
-  //
-  //  String inputMember(String promptTitle) {
-  //    while(true) {
-  //      String id = Prompt.inputString(promptTitle);
-  //      if(id.length() == 0) {
-  //        return null;
-  //      }else if(findById(id) != null) {
-  //        return id;
-  //      }
-  //      System.out.println("잘못된 아이디 입니다.");
-  //    }
-  //  }
-  //
-  //  protected Member findByNo(int memberNo) {
-  //    Member[] list = memberList.toArray(new Member[memberList.size()]);
-  //    for(Member m : list) {
-  //      if(m.getNumber() == memberNo) {
-  //        return m;
-  //      }
-  //    }
-  //    return null;
-  //  }
-  //
-  //  private Member findById(String id) {
-  //    Member[] list = memberList.toArray(new Member[memberList.size()]);
-  //    for(Member m : list) {
-  //      if(m.getId().equals(id)) {
-  //        return m;
-  //      }
-  //    }
-  //    return null;
-  //  }
-
   static void loadMembers() {
 
     try(Scanner in = new Scanner(new FileReader("members.csv"))) {
@@ -140,13 +96,9 @@ public class MemberService {
         }
       }
       System.out.println("멤버 데이터 로딩!");
-
     } catch (Exception e) {
-
       System.out.println("멤버 데이터 로딩 중 오류 발생!");
-
     }
-
   }
 
   static void saveMembers() {

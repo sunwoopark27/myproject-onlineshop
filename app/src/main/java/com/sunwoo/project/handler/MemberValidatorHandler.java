@@ -37,5 +37,4 @@ public class MemberValidatorHandler extends AbstractMemberHandler {
       System.out.println("잘못된 아이디 입니다.");
     }
   }
-
 }

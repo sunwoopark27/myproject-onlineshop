@@ -1,9 +1,10 @@
 package com.sunwoo.project.handler;
 
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Scanner;
 import com.sunwoo.project.domain.Shipping;
 
 public class ShippingService {
@@ -68,92 +69,45 @@ public class ShippingService {
 
   private void loadShippings() {
 
-    try(FileInputStream in = new FileInputStream("shippings.csv")) {
+    try(Scanner in = new Scanner(new FileInputStream("shippings.csv"))) {
 
-      int size = in.read() << 8 | in.read();
-
-      for (int i = 0; i < size; i++) {
-        Shipping shipping = new Shipping();
-
-        byte[] bytes = new byte[30000];
-
-        int len = in.read() << 8 | in.read();
-        in.read(bytes, 0, len);
-        shipping.setMemberId(new String(bytes,0,len,"UTF-8"));
-
-        int value = in.read() << 24;
-        value += in.read() << 16;
-        value += in.read() << 8;
-        value += in.read();
-        shipping.setOrderNumber(value);
-
-        value = in.read() << 24;
-        value += in.read() << 16;
-        value += in.read() << 8;
-        value += in.read();
-        shipping.setTrackingNumber(value);
-
-        value = in.read() << 24;
-        value += in.read() << 16;
-        value += in.read() << 8;
-        value += in.read();
-        shipping.setStatus(value);
-
-        len = in.read() << 8 | in.read();
-        in.read(bytes, 0, len);
-        shipping.setManager(new String(bytes,0,len,"UTF-8"));
+      while (true) {
+        try {
+          String record = in.nextLine();
+          String[] fields = record.split(",");
+          Shipping s = new Shipping();
+          s.setMemberId(fields[0]);
+          s.setOrderNumber(Integer.parseInt(fields[1]));
+          s.setTrackingNumber(Integer.parseInt(fields[2]));
+          s.setStatus(Integer.parseInt(fields[3]));
+          s.setManager(fields[4]);
+        } catch (Exception e) {
+          break;
+        }
       }
-
     } catch (Exception e) {
       System.out.println("배송 데이터 로딩 중 오류 발생!");
     }
-
   }
 
   private void saveShippings() {
-    try(FileOutputStream out = new FileOutputStream("shippings.csv")) {
-      out.write(shippingList.size() >> 8);
-      out.write(shippingList.size());
+    try(FileWriter out = new FileWriter("shippings.csv")) {
 
       for (Shipping s : shippingList) {
-        out.write(s.getNumber() >> 24);
-        out.write(s.getNumber() >> 16);
-        out.write(s.getNumber() >> 8);
-        out.write(s.getNumber());
-
-        byte[] buf = s.getMemberId().getBytes("UTF-8");
-        out.write(buf.length >> 8);
-        out.write(buf.length);
-        out.write(buf);
-
-        out.write(s.getOrderNumber() >> 24);
-        out.write(s.getOrderNumber() >> 16);
-        out.write(s.getOrderNumber() >> 8);
-        out.write(s.getOrderNumber());
-
-        out.write(s.getTrackingNumber() >> 24);
-        out.write(s.getTrackingNumber() >> 16);
-        out.write(s.getTrackingNumber() >> 8);
-        out.write(s.getTrackingNumber());
-
-        out.write(s.getStatus() >> 24);
-        out.write(s.getStatus() >> 16);
-        out.write(s.getStatus() >> 8);
-        out.write(s.getStatus());
-
-        buf = s.getManager().getBytes("UTF-8");
-        out.write(buf.length);
-        out.write(buf.length);
-        out.write(buf);
+        out.write(String.format("%d,%s,%d,%d,%d,%s",
+            s.getNumber(),
+            s.getMemberId(),
+            s.getOrderNumber(),
+            s.getTrackingNumber(),
+            s.getStatus(),
+            s.getManager()
+            ));
       }
 
       System.out.println("배송 데이터 저장!");
 
     } catch (Exception e) {
-
       System.out.println("배송 데이터 파일로 저장하는 중에 오류 발생!");
-
     }
-
   }
 }

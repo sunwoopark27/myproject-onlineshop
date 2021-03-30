@@ -1,9 +1,10 @@
 package com.sunwoo.project.handler;
 
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Scanner;
 import com.sunwoo.project.domain.Product;
 import com.sunwoo.util.Prompt;
 
@@ -15,9 +16,11 @@ public class ProductService {
     return productList;
   }
 
-  public void menu() {
-
+  public ProductService() { // menu()를 호출하지 않아도 상품정보가 로딩될 수 있도록 생성자에서 load
     loadProducts();
+  }
+
+  public void menu() {
 
     HashMap<String,Command> commandMap = new HashMap<>();
 
@@ -66,70 +69,39 @@ public class ProductService {
   }
 
   static void loadProducts() {
-    try(FileInputStream in = new FileInputStream("products.csv")){
+    try(Scanner in = new Scanner(new FileInputStream("products.csv"))){
 
-      int size = in.read() << 8 | in.read();
+      while(true) {
+        try {
+          String record = in.nextLine();
+          String[] fields = record.split(",");
+          Product p = new Product();
+          p.setNumber(Integer.parseInt(fields[0]));
+          p.setName(fields[1]);
+          p.setPrice(Integer.parseInt(fields[2]));
+          p.setPhoto(fields[3]);
 
-      for(int i = 0; i < size; i++) {
-
-        Product product = new Product();
-
-        byte[] bytes = new byte[30000];
-
-        int value = in.read() << 24;
-        value += in.read() << 16;
-        value += in.read() << 8;
-        value += in.read();
-        product.setNumber(value);
-
-        int len = in.read() << 8 | in.read();
-        in.read(bytes, 0, len);
-        product.setName(new String(bytes, 0, len, "UTF-8"));
-
-        value = in.read() << 24;
-        value += in.read() << 16;
-        value += in.read() << 8;
-        value += in.read();
-        product.setPrice(value);
-
-        len = in.read() << 8 | in.read();
-        in.read(bytes, 0, len);
-        product.setPhoto(new String(bytes, 0, len, "UTF-8"));
-
-        productList.add(product);
-        System.out.println("상품 데이터 로딩!");
+          productList.add(p);
+          System.out.println("상품 데이터 로딩!");
+        } catch (Exception e) {
+          break;
+        }
       }
-    } catch (Exception e) {
+    }catch (Exception e) {
       System.out.println("상품 데이터 로딩 중 오류 발생!");
     }
   }
 
   static void saveProducts() {
-    try(FileOutputStream out = new FileOutputStream("products.csv")) {
+    try(FileWriter out = new FileWriter("products.csv")) {
 
-      out.write(productList.size() >> 8);
-      out.write(productList.size());
-
-      for (Product product : productList) {
-        out.write(product.getNumber() >> 24);
-        out.write(product.getNumber() >> 16);
-        out.write(product.getNumber() >> 8);
-        out.write(product.getNumber());
-
-        byte[] bytes = product.getName().getBytes("UTF-8");
-        out.write(bytes.length >> 8);
-        out.write(bytes.length);
-        out.write(bytes);
-
-        out.write(product.getPrice() >> 24);
-        out.write(product.getPrice() >> 16);
-        out.write(product.getPrice() >> 8);
-        out.write(product.getPrice());
-
-        bytes = product.getPhoto().getBytes("UTF-8");
-        out.write(bytes.length >> 8);
-        out.write(bytes.length);
-        out.write(bytes);
+      for (Product p : productList) {
+        out.write(String.format("%d,%s,%d,%s",
+            p.getNumber(),
+            p.getName(),
+            p.getPrice(),
+            p.getPhoto()
+            ));
       }
 
       System.out.println("상품 데이터 저장!");

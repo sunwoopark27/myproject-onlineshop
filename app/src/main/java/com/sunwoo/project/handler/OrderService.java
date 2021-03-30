@@ -20,11 +20,11 @@ public  class OrderService {
   public OrderService(MemberValidatorHandler memberValidatorHandler, ProductValidatorHandler productValidatorHandler) {
     this.memberValidatorHandler = memberValidatorHandler;
     this.productValidatorHandler = productValidatorHandler;
+
+    loadOrders();
   }
 
   public void menu() {
-
-    loadOrders();
 
     HashMap<String,Command> commandMap = new HashMap<>();
 
@@ -33,7 +33,6 @@ public  class OrderService {
     commandMap.put("3", new OrderDetailHandler(orderList));
     commandMap.put("4", new OrderUpdateHandler(productValidatorHandler, orderList));
     commandMap.put("5", new OrderDeleteHandler(orderList));
-
 
     loop:
       while(true) {
