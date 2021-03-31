@@ -103,9 +103,7 @@ public class ShippingService {
             s.getManager()
             ));
       }
-
       System.out.println("배송 데이터 저장!");
-
     } catch (Exception e) {
       System.out.println("배송 데이터 파일로 저장하는 중에 오류 발생!");
     }
