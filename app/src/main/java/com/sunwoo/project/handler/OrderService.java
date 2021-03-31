@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import com.sunwoo.project.domain.Order;
@@ -75,26 +74,15 @@ public  class OrderService {
   private void loadOrders() {
     try(BufferedReader in = new BufferedReader(new FileReader("orders.csv"))) {
 
-      String record = null;
-      while ((record = in.readLine()) != null) {
+      String csvStr = null;
+      while ((csvStr = in.readLine()) != null) {
         try {
-          String[] fields = record.split(",");
-          Order o = new Order();
-          o.setMemberId(fields[0]);
-          o.setNumber(Integer.parseInt(fields[1]));
-          o.setProducts(fields[2]);
-          o.setRegisteredDate(Date.valueOf(fields[3]));
-          o.setRequest(fields[4]);
-          o.setTotalPrice(Integer.parseInt(fields[5]));
-
-          orderList.add(o);
+          orderList.add(Order.valueOfCsv(csvStr));
         } catch (Exception e) {
           break;
         }
       }
-
       System.out.println("주문 데이터 로딩!");
-
     } catch (Exception e) {
       System.out.println("주문 데이터 로딩 중 오류 발생!");
     }
@@ -104,14 +92,7 @@ public  class OrderService {
     try(BufferedWriter out = new BufferedWriter(new FileWriter("orders.csv"))) {
 
       for (Order o : orderList) {
-
-        out.write(String .format("%d,%s,%s,%s,%d",
-            o.getNumber(),
-            o.getProducts(),
-            o.getRegisteredDate(),
-            o.getRequest(),
-            o.getTotalPrice()
-            ));
+        out.write(o.toCsvString());
       }
       System.out.println("주문 데이터 저장");
 

@@ -5,12 +5,36 @@ import java.io.Serializable;
 public class Shipping implements Serializable {
 
   private static final long serialVersionUID = 1L;
-  private int number;//
-  private String memberId;//
-  private int orderNumber;//
-  private int trackingNumber;//
+  private int number;
+  private String memberId;
+  private int orderNumber;
+  private int trackingNumber;
   private int status;
   private String manager;
+
+  public String toCsvString() {
+    return String.format("%d,%s,%d,%d,%d,%s",
+        this.getNumber(),
+        this.getMemberId(),
+        this.getOrderNumber(),
+        this.getTrackingNumber(),
+        this.getStatus(),
+        this.getManager()
+        );
+  }
+
+  public static Shipping valueOfCsv(String csv) {
+    String[] fields = csv.split(",");
+    Shipping s = new Shipping();
+    s.setNumber(Integer.parseInt(fields[0]));
+    s.setMemberId(fields[1]);
+    s.setOrderNumber(Integer.parseInt(fields[2]));
+    s.setTrackingNumber(Integer.parseInt(fields[3]));
+    s.setStatus(Integer.parseInt(fields[4]));
+    s.setManager(fields[5]);
+
+    return s;
+  }
 
   @Override
   public int hashCode() {
@@ -82,7 +106,5 @@ public class Shipping implements Serializable {
   public void setManager(String manager) {
     this.manager = manager;
   }
-
-
 
 }

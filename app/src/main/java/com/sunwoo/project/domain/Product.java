@@ -11,6 +11,26 @@ public class Product implements Serializable {
   private int price;//
   private String photo;
 
+  public String toCsvString() {
+    return String.format("%d,%s,%d,%s",
+        this.getNumber(),
+        this.getName(),
+        this.getPrice(),
+        this.getPhoto()
+        );
+  }
+
+  public static Product valueOfCsv(String csv) {
+    String[] fields = csv.split(",");
+    Product p = new Product();
+    p.setNumber(Integer.parseInt(fields[0]));
+    p.setName(fields[1]);
+    p.setPrice(Integer.parseInt(fields[2]));
+    p.setPhoto(fields[3]);
+
+    return p;
+  }
+
   @Override
   public int hashCode() {
     final int prime = 31;

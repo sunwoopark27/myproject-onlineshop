@@ -14,6 +14,30 @@ public class Order implements Serializable {
   private String request;
   private int totalPrice;
 
+  public String toCsvString() {
+    return String .format("%s,%d,%s,%s,%s,%d",
+        this.getMemberId(),
+        this.getNumber(),
+        this.getProducts(),
+        this.getRegisteredDate(),
+        this.getRequest(),
+        this.getTotalPrice()
+        );
+  }
+
+  public static Order valueOfCsv(String csv) {
+    String[] fields = csv.split(",");
+    Order o = new Order();
+    o.setMemberId(fields[0]);
+    o.setNumber(Integer.parseInt(fields[1]));
+    o.setProducts(fields[2]);
+    o.setRegisteredDate(Date.valueOf(fields[3]));
+    o.setRequest(fields[4]);
+    o.setTotalPrice(Integer.parseInt(fields[5]));
+
+    return o;
+  }
+
   @Override
   public int hashCode() {
     final int prime = 31;

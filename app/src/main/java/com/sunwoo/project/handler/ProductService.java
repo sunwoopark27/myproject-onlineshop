@@ -71,17 +71,10 @@ public class ProductService {
 
   static void loadProducts() {
     try(BufferedReader in = new BufferedReader(new FileReader("products.csv"))){
-      String record = null;
-      while((record = in.readLine()) != null) {
+      String csvStr = null;
+      while((csvStr = in.readLine()) != null) {
         try {
-          String[] fields = record.split(",");
-          Product p = new Product();
-          p.setNumber(Integer.parseInt(fields[0]));
-          p.setName(fields[1]);
-          p.setPrice(Integer.parseInt(fields[2]));
-          p.setPhoto(fields[3]);
-
-          productList.add(p);
+          productList.add(Product.valueOfCsv(csvStr));
           System.out.println("상품 데이터 로딩!");
         } catch (Exception e) {
           break;
@@ -96,12 +89,7 @@ public class ProductService {
     try(BufferedWriter out = new BufferedWriter(new FileWriter("products.csv"))) {
 
       for (Product p : productList) {
-        out.write(String.format("%d,%s,%d,%s",
-            p.getNumber(),
-            p.getName(),
-            p.getPrice(),
-            p.getPhoto()
-            ));
+        out.write(p.toCsvString());
       }
 
       System.out.println("상품 데이터 저장!");

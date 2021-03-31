@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.sql.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import com.sunwoo.project.domain.Member;
@@ -76,22 +75,10 @@ public class MemberService {
   static void loadMembers() {
 
     try(BufferedReader in = new BufferedReader(new FileReader("members.csv"))) {
-
-      while(true) {
+      String csvString = null;
+      while((csvString = in.readLine()) != null) {
         try {
-          String record = in.readLine();
-          String[] fields = record.split(",");
-          Member m = new Member();
-          m.setNumber(Integer.parseInt(fields[0]));
-          m.setName(fields[1]);
-          m.setId(fields[2]);
-          m.setPassword(fields[3]);
-          m.setTel(fields[4]);
-          m.setAddress(fields[5]);
-          m.setEmail(fields[6]);
-          m.setJoinDate(Date.valueOf(fields[7]));
-
-          memberList.add(m);
+          memberList.add(Member.valueOfCsv(csvString));
         } catch(Exception e){
           break;
         }
@@ -107,22 +94,12 @@ public class MemberService {
     try(BufferedWriter out = new BufferedWriter(new FileWriter("members.csv"))) {
 
       for (Member m : memberList) {
-        out.write(String.format("%d,%s,%s,%s,%s,%s,%s,%s\n",
-            m.getNumber(),
-            m.getName(),
-            m.getId(),
-            m.getPassword(),
-            m.getTel(),
-            m.getAddress(),
-            m.getEmail(),
-            m.getJoinDate()));
+        out.write(m.toCsvString());
       }
       System.out.println("회원 데이터 저장!");
 
     } catch(Exception e) {
-
       System.out.println("회원 데이터 파일로 저장 중 오류 발생!");
-
     }
 
   }

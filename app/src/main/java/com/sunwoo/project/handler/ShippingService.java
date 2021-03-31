@@ -11,17 +11,18 @@ import com.sunwoo.project.domain.Shipping;
 public class ShippingService {
 
   ArrayList<Shipping> shippingList = new ArrayList<>();
+
   private MemberValidatorHandler memberValidatorHandler;
   private OrderValidatorHandler orderValidatorHandler;
 
   public ShippingService(MemberValidatorHandler memberValidatorHandler, OrderValidatorHandler orderValidatorHandler) {
     this.memberValidatorHandler = memberValidatorHandler;
     this.orderValidatorHandler = orderValidatorHandler;
+
+    loadShippings();
   }
 
   public void menu() {
-
-    loadShippings();
 
     HashMap<String,Command> commandMap = new HashMap<>();
 
@@ -72,20 +73,15 @@ public class ShippingService {
 
     try(BufferedReader in = new BufferedReader(new FileReader("shippings.csv"))) {
 
-      String record = null;
-      while ((record = in.readLine()) != null) {
+      String csvStr = null;
+      while ((csvStr = in.readLine()) != null) {
         try {
-          String[] fields = record.split(",");
-          Shipping s = new Shipping();
-          s.setMemberId(fields[0]);
-          s.setOrderNumber(Integer.parseInt(fields[1]));
-          s.setTrackingNumber(Integer.parseInt(fields[2]));
-          s.setStatus(Integer.parseInt(fields[3]));
-          s.setManager(fields[4]);
+          shippingList.add(Shipping.valueOfCsv(csvStr));
         } catch (Exception e) {
           break;
         }
       }
+      System.out.println("배송 데이터 로딩!");
     } catch (Exception e) {
       System.out.println("배송 데이터 로딩 중 오류 발생!");
     }
@@ -95,16 +91,10 @@ public class ShippingService {
     try(BufferedWriter out = new BufferedWriter(new FileWriter("shippings.csv"))) {
 
       for (Shipping s : shippingList) {
-        out.write(String.format("%d,%s,%d,%d,%d,%s",
-            s.getNumber(),
-            s.getMemberId(),
-            s.getOrderNumber(),
-            s.getTrackingNumber(),
-            s.getStatus(),
-            s.getManager()
-            ));
+        out.write(s.toCsvString() + "\n");
       }
-      System.out.println("배송 데이터 저장!");
+      System.out.println("배송 데이터 저장");
+
     } catch (Exception e) {
       System.out.println("배송 데이터 파일로 저장하는 중에 오류 발생!");
     }

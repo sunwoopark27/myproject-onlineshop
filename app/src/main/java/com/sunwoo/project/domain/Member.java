@@ -16,6 +16,34 @@ public class Member implements Serializable {
   private String email;
   private Date joinDate;
 
+  public String toCsvString() {
+    return String.format("%d,%s,%s,%s,%s,%s,%s,%s\n",
+        this.getNumber(),
+        this.getName(),
+        this.getId(),
+        this.getPassword(),
+        this.getTel(),
+        this.getAddress(),
+        this.getEmail(),
+        this.getJoinDate());
+  }
+
+  public static Member valueOfCsv(String csv){
+    String[] fields = csv.split(",");
+    Member m = new Member();
+    m.setNumber(Integer.parseInt(fields[0]));
+    m.setName(fields[1]);
+    m.setId(fields[2]);
+    m.setPassword(fields[3]);
+    m.setTel(fields[4]);
+    m.setAddress(fields[5]);
+    m.setEmail(fields[6]);
+    m.setJoinDate(Date.valueOf(fields[7]));
+
+    return m;
+  }
+
+
   @Override
   public int hashCode() {
     final int prime = 31;
