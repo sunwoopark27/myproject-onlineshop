@@ -1,11 +1,12 @@
 package com.sunwoo.project.handler;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.sql.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Scanner;
 import com.sunwoo.project.domain.Member;
 
 public class MemberService {
@@ -74,11 +75,11 @@ public class MemberService {
 
   static void loadMembers() {
 
-    try(Scanner in = new Scanner(new FileReader("members.csv"))) {
+    try(BufferedReader in = new BufferedReader(new FileReader("members.csv"))) {
 
       while(true) {
         try {
-          String record = in.nextLine();
+          String record = in.readLine();
           String[] fields = record.split(",");
           Member m = new Member();
           m.setNumber(Integer.parseInt(fields[0]));
@@ -103,7 +104,7 @@ public class MemberService {
 
   static void saveMembers() {
 
-    try(FileWriter out = new FileWriter("members.csv")) {
+    try(BufferedWriter out = new BufferedWriter(new FileWriter("members.csv"))) {
 
       for (Member m : memberList) {
         out.write(String.format("%d,%s,%s,%s,%s,%s,%s,%s\n",
@@ -115,7 +116,6 @@ public class MemberService {
             m.getAddress(),
             m.getEmail(),
             m.getJoinDate()));
-
       }
       System.out.println("회원 데이터 저장!");
 

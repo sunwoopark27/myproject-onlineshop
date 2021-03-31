@@ -1,10 +1,11 @@
 package com.sunwoo.project.handler;
 
-import java.io.FileInputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Scanner;
 import com.sunwoo.project.domain.Shipping;
 
 public class ShippingService {
@@ -69,11 +70,11 @@ public class ShippingService {
 
   private void loadShippings() {
 
-    try(Scanner in = new Scanner(new FileInputStream("shippings.csv"))) {
+    try(BufferedReader in = new BufferedReader(new FileReader("shippings.csv"))) {
 
-      while (true) {
+      String record = null;
+      while ((record = in.readLine()) != null) {
         try {
-          String record = in.nextLine();
           String[] fields = record.split(",");
           Shipping s = new Shipping();
           s.setMemberId(fields[0]);
@@ -91,7 +92,7 @@ public class ShippingService {
   }
 
   private void saveShippings() {
-    try(FileWriter out = new FileWriter("shippings.csv")) {
+    try(BufferedWriter out = new BufferedWriter(new FileWriter("shippings.csv"))) {
 
       for (Shipping s : shippingList) {
         out.write(String.format("%d,%s,%d,%d,%d,%s",

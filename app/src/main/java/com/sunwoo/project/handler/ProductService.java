@@ -1,10 +1,11 @@
 package com.sunwoo.project.handler;
 
-import java.io.FileInputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Scanner;
 import com.sunwoo.project.domain.Product;
 import com.sunwoo.util.Prompt;
 
@@ -69,11 +70,10 @@ public class ProductService {
   }
 
   static void loadProducts() {
-    try(Scanner in = new Scanner(new FileInputStream("products.csv"))){
-
-      while(true) {
+    try(BufferedReader in = new BufferedReader(new FileReader("products.csv"))){
+      String record = null;
+      while((record = in.readLine()) != null) {
         try {
-          String record = in.nextLine();
           String[] fields = record.split(",");
           Product p = new Product();
           p.setNumber(Integer.parseInt(fields[0]));
@@ -93,7 +93,7 @@ public class ProductService {
   }
 
   static void saveProducts() {
-    try(FileWriter out = new FileWriter("products.csv")) {
+    try(BufferedWriter out = new BufferedWriter(new FileWriter("products.csv"))) {
 
       for (Product p : productList) {
         out.write(String.format("%d,%s,%d,%s",

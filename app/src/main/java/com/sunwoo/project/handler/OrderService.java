@@ -1,11 +1,12 @@
 package com.sunwoo.project.handler;
 
-import java.io.FileInputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Scanner;
 import com.sunwoo.project.domain.Order;
 
 public  class OrderService {
@@ -72,11 +73,11 @@ public  class OrderService {
   }
 
   private void loadOrders() {
-    try(Scanner in = new Scanner(new FileInputStream("orders.csv"))) {
+    try(BufferedReader in = new BufferedReader(new FileReader("orders.csv"))) {
 
-      while (true) {
+      String record = null;
+      while ((record = in.readLine()) != null) {
         try {
-          String record = in.nextLine();
           String[] fields = record.split(",");
           Order o = new Order();
           o.setMemberId(fields[0]);
@@ -100,7 +101,7 @@ public  class OrderService {
   }
 
   private void saveOrders() {
-    try(FileWriter out = new FileWriter("orders.csv")) {
+    try(BufferedWriter out = new BufferedWriter(new FileWriter("orders.csv"))) {
 
       for (Order o : orderList) {
 
