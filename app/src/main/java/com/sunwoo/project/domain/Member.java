@@ -1,11 +1,9 @@
 package com.sunwoo.project.domain;
 
-import java.io.Serializable;
 import java.sql.Date;
+import com.sunwoo.util.CsvObject;
 
-public class Member implements Serializable {
-
-  private static final long serialVersionUID = 1L;
+public class Member implements CsvObject {
 
   private int number;//
   private String name;//
@@ -16,6 +14,7 @@ public class Member implements Serializable {
   private String email;
   private Date joinDate;
 
+  @Override
   public String toCsvString() {
     return String.format("%d,%s,%s,%s,%s,%s,%s,%s\n",
         this.getNumber(),

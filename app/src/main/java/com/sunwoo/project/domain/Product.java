@@ -1,16 +1,15 @@
 package com.sunwoo.project.domain;
 
-import java.io.Serializable;
+import com.sunwoo.util.CsvObject;
 
-public class Product implements Serializable {
-
-  private static final long serialVersionUID = 1L;
+public class Product implements CsvObject {
 
   private int number;//
   private String name;//
   private int price;//
   private String photo;
 
+  @Override
   public String toCsvString() {
     return String.format("%d,%s,%d,%s",
         this.getNumber(),

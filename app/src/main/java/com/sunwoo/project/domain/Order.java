@@ -1,19 +1,18 @@
 package com.sunwoo.project.domain;
 
-import java.io.Serializable;
 import java.sql.Date;
+import com.sunwoo.util.CsvObject;
 
-public class Order implements Serializable {
+public class Order implements CsvObject  {
 
-  private static final long serialVersionUID = 1L;
-
-  private String memberId;//
-  private int number;//
-  private String products;  //
-  private Date registeredDate; //  
+  private String memberId;
+  private int number;
+  private String products;  
+  private Date registeredDate; 
   private String request;
   private int totalPrice;
 
+  @Override
   public String toCsvString() {
     return String .format("%s,%d,%s,%s,%s,%d",
         this.getMemberId(),

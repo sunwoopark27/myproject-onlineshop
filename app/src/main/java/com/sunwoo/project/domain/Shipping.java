@@ -1,10 +1,9 @@
 package com.sunwoo.project.domain;
 
-import java.io.Serializable;
+import com.sunwoo.util.CsvObject;
 
-public class Shipping implements Serializable {
+public class Shipping implements CsvObject {
 
-  private static final long serialVersionUID = 1L;
   private int number;
   private String memberId;
   private int orderNumber;
@@ -12,6 +11,7 @@ public class Shipping implements Serializable {
   private int status;
   private String manager;
 
+  @Override
   public String toCsvString() {
     return String.format("%d,%s,%d,%d,%d,%s",
         this.getNumber(),
