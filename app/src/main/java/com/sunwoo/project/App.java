@@ -3,7 +3,7 @@ package com.sunwoo.project;
 import java.util.ArrayDeque;
 import java.util.Iterator;
 import java.util.LinkedList;
-import com.sunwoo.project.handler.BoardChooseHandler;
+import com.sunwoo.project.handler.BoardService;
 import com.sunwoo.project.handler.MemberService;
 import com.sunwoo.project.handler.MemberValidatorHandler;
 import com.sunwoo.project.handler.OrderService;
@@ -37,7 +37,7 @@ public class App {
 
     ShippingService shippingService = new ShippingService(memberValidatorHandler, orderValidatorHandler);
 
-    BoardChooseHandler boardChooseHandler = new BoardChooseHandler();
+    BoardService boardServiceProduct = new BoardService();
 
     loop: 
       while(true) {
@@ -75,7 +75,7 @@ public class App {
             break;
 
           case "5" :
-            boardChooseHandler.chooseBoard();
+            boardServiceProduct.menu();
             break;
 
           case "history" : 
@@ -99,7 +99,6 @@ public class App {
             System.out.println();
 
         }
-
       }
   }
 

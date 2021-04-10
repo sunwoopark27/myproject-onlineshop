@@ -62,6 +62,7 @@ public class MemberService {
               }
 
           }
+
         }catch(Exception e) {
           System.out.println("-----------------------------------------------------------------------------");
           System.out.printf("명령어 실행 중 오류 발생: %s - %s\n",e.getClass().getName(), e.getMessage());
